@@ -2,6 +2,9 @@
 
 html, body {
   font-family: 'Open Sans', sans-serif;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
 .app-grid {
@@ -159,4 +162,8 @@ html, body {
 
 .orange-bg {
   background: orange;
+}
+
+.site-content {
+  flex: 1;
 }
