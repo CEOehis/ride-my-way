@@ -152,3 +152,7 @@ html, body {
   margin: 1em 0;
   padding: 0;
 }
+
+.orange-bg {
+  background: orange;
+}
