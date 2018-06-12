@@ -208,3 +208,12 @@ html, body {
 .report.error {
   background: rgb(248, 155, 155);
 }
+
+.member-status {
+  margin-top: 10px;
+  display: block;
+}
+
+.member-status a {
+  color: orange;
+}

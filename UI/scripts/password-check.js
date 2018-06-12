@@ -8,14 +8,14 @@ const form = document.querySelector('#register');
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   const password = passwordInput.value;
-  const passwordConfirm = passwordConfirmInput.value;
+  const passwordConfirm = passwordConfirmInput && passwordConfirmInput.value;
   if (password.length < 6) {
     removeFeedbackClasses();
     reportDiv.classList.add('error');
     reportDiv.innerHTML = '<p>Password can\'t be less than <br /> 6 characters.</p>'
     return;
   }
-  if (password !== passwordConfirm) {
+  if (passwordConfirm && password !== passwordConfirm) {
     removeFeedbackClasses();
     reportDiv.classList.add('error');
     reportDiv.innerHTML = '<p>passwords do not match</p>'
@@ -36,7 +36,7 @@ passwordInput.addEventListener('keydown', () => {
   reportDiv.innerHTML = ''
 });
 
-passwordConfirmInput.addEventListener('keydown', () => {
+passwordConfirmInput && passwordConfirmInput.addEventListener('keydown', () => {
   removeFeedbackClasses();
   reportDiv.innerHTML = ''
 });
