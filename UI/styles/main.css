@@ -48,3 +48,51 @@ html, body {
 .nav-links a:hover {
   color: orange;
 }
+
+.hero {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.hero h1 {
+  color: orange;
+}
+
+.hero p {
+  max-width: 600px;
+  font-size: 20px;
+  line-height: 30px;
+  margin-bottom: 50px;
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  padding: 6px 20px;
+  line-height: 1.5;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.btn-lg {
+  font-size: 24px;
+}
+
+.btn-orange {
+  color: orange;
+  background-color: transparent;
+  background-image: none;
+  border-color: orange;
+}
+
+.btn-orange:hover {
+  color: white;
+  border-color: white;
+  background-color: orange;
+}
