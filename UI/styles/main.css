@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|PT+Sans:700');
+
+html, body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.layout-grid {
+  display: grid;
+  grid-column-gap: 20px;
+  padding: 10px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.navbar {
+  grid-column: span 10/12;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+}
+
+.brand {
+  font-family: 'PT Sans', sans-serif;
+  font-weight: 700;
+  margin: 0;
+  color: orange;
+  font-size: 40px;
+}
+
+.nav-links {
+  display: flex;
+}
+
+.nav-links li {
+  margin-right: 10px;
+  margin-left: 10px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: black;
+  padding: 15px 15px;
+}
+
+.nav-links a:hover {
+  color: orange;
+}
