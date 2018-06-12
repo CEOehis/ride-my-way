@@ -19,10 +19,28 @@
     </nav>
   </header>
   <main class="app-grid site-content">
-    <div class="layout-grid hero">
-      <h1>Lorem headline</h1>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsa ex maiores deserunt, et quas aspernatur optio, voluptates dignissimos reiciendis sapiente atque saepe. Nisi iusto nostrum expedita magnam, quam nemo perferendis?</p>
-      <a class="btn btn-orange btn-lg" href="/register.html">Get Started</a>
+    <div class="layout-grid hero p-100">
+      <h1>Register to get started</h1>
+      <form id="register">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="Jamiu Salami" required />
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="jamius@sample.com" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="enter your password" required />
+        </div>
+        <div class="form-group">
+          <label for="password2">Confirm Password</label>
+          <input type="password" id="password2" placeholder="enter same password as above" required />
+          <div class="report"></div>
+        </div>
+        <input class="btn btn-lg btn-submit btn-orange" type="submit" value="submit"/>
+      </form>
     </div>
   </main>
   <footer class="app-grid orange-bg">
@@ -31,5 +49,8 @@
     </div>
 
   </footer>
+
+  <script src="./scripts/password-check.js">
+  </script>
 </body>
 </html>

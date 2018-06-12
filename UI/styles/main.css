@@ -167,3 +167,44 @@ html, body {
 .site-content {
   flex: 1;
 }
+
+/* signup page */
+.form-group input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 2px solid;
+  transition: all .5s;
+}
+
+.form-group input:focus {
+  border-color: orange;
+  outline: none;
+}
+
+.btn-submit {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.p-100 {
+  padding-bottom: 100px;
+}
+
+.report {
+  width: 100%;
+  /* padding: 12px 20px; */
+  box-sizing: border-box;
+  transition: all .5s;
+}
+
+.report p {
+  margin: 2px 0 0;
+  width: 100%;
+}
+
+.report.error {
+  background: rgb(248, 155, 155);
+}
