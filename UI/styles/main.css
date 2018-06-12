@@ -29,6 +29,10 @@ html, body {
   font-size: 40px;
 }
 
+.brand a {
+  color: inherit;
+}
+
 .nav-links {
   display: flex;
 }
@@ -137,7 +141,7 @@ html, body {
 }
 
 .card:hover {
-  box-shadow: 0px 2px 20px white;
+  box-shadow: 0px 2px 20px orange;
 }
 
 .card p {
