@@ -346,3 +346,19 @@ html, body {
 .call-to-action {
   margin-top: 50px;
 }
+
+/* request success */
+.success-message {
+  display: flex;
+  align-items: center;
+}
+
+.success-message .fa {
+  color: green;
+}
+
+.success-message p {
+  margin-left: 10px;
+  max-width: 60%;
+  line-height: 25px;
+}
