@@ -241,7 +241,7 @@ html, body {
   font-size: 20px;
 }
 
-.ride-results {
+.ride-results, .ride-offer {
   padding-bottom: 100px;
 }
 
@@ -361,4 +361,9 @@ html, body {
   margin-left: 10px;
   max-width: 60%;
   line-height: 25px;
+}
+
+/* offer a ride */
+.ride-offer h3 {
+  color: rgb(173, 170, 170);
 }

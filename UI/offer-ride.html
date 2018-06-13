@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Ride My Way</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="styles/normalize.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="styles/main.css" />
+</head>
+<body>
+  <header class="app-grid">
+    <nav class="layout-grid navbar">
+      <h1 class="brand"><a href="/index.html">RideMyWay</a></h1>
+      <ul class="nav-links">
+        <li><a href="/offer-ride.html">Offer a Ride</a></li>
+        <li><a href="/index.html">sign out</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section class="app-grid site-content">
+    <div class="layout-grid">
+      <div class="">
+        <h2>Post a Ride Offer</h2>
+        <p>Add details of your ride offer and we'll find you paying passengers.</p>
+      </div>
+      <div class="ride-offer">
+        <form id="offer-ride">
+          <h3>Route information</h3>
+          <div class="form-group">
+            <label for="from">From</label>
+            <input type="text" id="from" placeholder="Where from?" required />
+          </div>
+          <div class="form-group">
+            <label for="to">To</label>
+            <input type="text" id="to" placeholder="Where to?" required />
+            <div class="report"></div>
+          </div>
+          <h3>Departure information</h3>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" required />
+            <div class="report"></div>
+          </div>
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" id="time" required />
+            <div class="report"></div>
+          </div>
+          <h3>Vehicle information</h3>
+          <div class="form-group">
+            <label for="seats">Available seats</label>
+            <input type="number" name="seats" min="1" max="3" placeholder="eg 3">
+            <div class="report"></div>
+          </div>
+          <div class="form-group">
+            <label for="price">Price per seats (&#x20a6;)</label>
+            <input type="number" name="price" min="100" placeholder="eg 100">
+            <div class="report"></div>
+          </div>
+          <input class="btn btn-lg btn-submit btn-orange-inverse" type="submit" value="Post Ride" />
+        </form>
+      </div>
+    </div>
+  </section>
+  <footer class="app-grid orange-bg">
+    <div class="layout-grid">
+      <p>&copy; 2018. Hand crafted by Celestine Ekoh-Ordan</p>
+    </div>
+
+  </footer>
+
+  <script>
+    let today = new Date();
+    let yyyy = today.getFullYear();
+
+    // use slice to prefix date, month with trailing 0s
+    let dd = `0${today.getDate()}`.slice(-2);
+    let mm = `0${today.getMonth() + 1}`.slice(-2);
+
+    today = yyyy+'-'+mm+'-'+dd;
+    document.getElementById("date").setAttribute("min", today);
+
+    // handle form submit
+    const form = document.getElementById('offer-ride');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      window.location.href = '/my-ride-offers.html'
+    })
+  </script>
+</body>
+</html>
