@@ -322,6 +322,14 @@ html, body {
   padding: 15px 40px 50px;
 }
 
+.trip td {
+  padding: 5px 15px 5px 0;
+}
+
+.trip tr>td:first-child {
+  font-weight: bold;
+}
+
 .driver-profile {
   grid-column: span 4;
 }
@@ -331,3 +339,10 @@ html, body {
   font-family: 'Open Sans', sans-serif;
 }
 
+.checked {
+  color: orange;
+}
+
+.call-to-action {
+  margin-top: 50px;
+}
