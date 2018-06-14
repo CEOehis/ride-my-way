@@ -396,3 +396,12 @@ html, body {
   align-self: center;
   display: block;
 }
+
+.user-profile {
+  display: flex;
+  align-items: center;
+}
+
+.user-profile-info {
+  padding-left: 15px;
+}
