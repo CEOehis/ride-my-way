@@ -375,3 +375,24 @@ html, body {
 .upcoming-trips table {
   width: 100%;
 }
+
+.ride-requests {
+  margin-bottom: 100px;
+}
+
+.ride-requests h2 {
+  color: rgb(173, 170, 170);
+}
+
+.request-summary {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(153, 153, 153);
+  margin-bottom: 15px;
+}
+
+.request-summary .actions {
+  align-self: center;
+  display: block;
+}
