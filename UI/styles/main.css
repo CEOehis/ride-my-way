@@ -367,3 +367,11 @@ html, body {
 .ride-offer h3 {
   color: rgb(173, 170, 170);
 }
+
+.upcoming-trips {
+  width: 100%;
+}
+
+.upcoming-trips table {
+  width: 100%;
+}
