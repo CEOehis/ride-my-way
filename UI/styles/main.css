@@ -469,3 +469,60 @@ html, body {
 .tab-content table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+.menu, .nav-links .brand {
+  display: none;
+}
+
+/* media queries */
+@media only screen and (max-width: 800px) {
+  .layout-grid {
+    grid-column: span 12;
+  }
+
+  .trip {
+    grid-column: span 12;
+  }
+
+  .driver-profile {
+    grid-column: span 12;
+  }
+}
+
+@media only screen and (max-width: 650px) {
+  .nav-links {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: black;
+    height: 100%;
+    padding-left: 0;
+    margin-top: 0;
+    width: 250px;
+    color: white;
+    transform: translate(-550px, 0);
+    transition: transform .3s ease;
+  }
+
+  .expanded {
+    transform: translate(0, 0);
+  }
+
+  .nav-links a {
+    color: white;
+    font-size: 20px;
+    width: 100%;
+    display: block;
+  }
+
+  .nav-links .brand {
+    font-size: 40px;
+    color: orange;
+  }
+
+  .menu, .nav-links .brand {
+    display: block;
+  }
+
+}
