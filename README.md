@@ -20,7 +20,7 @@ the ride leaves, where it is headed e.t.c
 
 ## UI templates
 
-https://ceoehis.github.io/ride-my-way/ui
+https://ceoehis.github.io/ride-my-way/UI
 
 * [x] User signup and signin pages.
 
