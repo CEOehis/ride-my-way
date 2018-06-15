@@ -487,6 +487,10 @@ html, body {
   .driver-profile {
     grid-column: span 12;
   }
+
+  .steps {
+    flex-direction: column;
+  }
 }
 
 @media only screen and (max-width: 650px) {
@@ -540,10 +544,26 @@ html, body {
   /* .profile, .ride-info, .actions {
     grid-column: span 12;
   } */
-  .profile img {
+  .ride-summary .profile img {
     display: none;
   }
   .price {
     /* font-size: 20px; */
+  }
+
+  .trip {
+    display: flex;
+    flex-direction: column;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .call-to-action {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .call-to-action a {
+    margin-bottom: 5px;
   }
 }
