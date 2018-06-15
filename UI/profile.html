@@ -13,7 +13,9 @@
   <header class="app-grid">
     <nav class="layout-grid navbar">
       <h1 class="brand"><a href="/index.html">RideMyWay</a></h1>
+      <button class="menu btn">Menu</button>
       <ul class="nav-links">
+        <li><a class="brand" href="/index.html">RideMyWay</a></li>
         <li><a href="/offer-ride.html">Offer a Ride</a></li>
         <li><a href="/profile.html">Profile</a></li>
         <li><a href="/index.html">sign out</a></li>
@@ -143,6 +145,19 @@
       document.getElementById(tab).style.display = 'block';
       event.currentTarget.className += ' active';
     }
+  </script>
+  <script>
+    let menu = document.querySelector('.menu');
+    let navLinks = document.querySelector('.nav-links');
+    menu.addEventListener('click', function() {
+      console.log('menu')
+      let navClasses = [...navLinks.classList];
+      if(navClasses.includes('expanded')) {
+        navLinks.classList.remove('expanded');
+        return;
+      }
+      navLinks.classList.add('expanded');
+    })
   </script>
 </body>
 </html>
