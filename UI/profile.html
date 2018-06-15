@@ -36,6 +36,20 @@
           </div>
         </div>
         <h3>My Rides</h3>
+        <div class="ride-history">
+          <!-- tab links -->
+          <div class="tab">
+            <button class="tablink" onclick="openTab(event, 'rides-taken')" id="defaultTab">Rides Taken (3)</button>
+            <button class="tablink" onclick="openTab(event, 'rides-offered')" >Rides Offered</button>
+          </div>
+          <!-- tab content -->
+          <div id="rides-taken" class="tab-content">
+            <h3>Rides Taken</h3>
+          </div>
+          <div id="rides-offered" class="tab-content">
+            <h3>Rides Offered</h3>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -45,5 +59,25 @@
     </div>
 
   </footer>
+
+  <script>
+    document.getElementById("defaultTab").click();
+    function openTab(event, tab) {
+      let tabContents, tablinks;
+
+      tabContents = document.querySelectorAll('.tab-content');
+      for(let i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = 'none';
+      }
+
+      tablinks =document.querySelectorAll('.tablink');
+      for(let i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(' active', '');
+      }
+
+      document.getElementById(tab).style.display = 'block';
+      event.currentTarget.className += ' active';
+    }
+  </script>
 </body>
 </html>
