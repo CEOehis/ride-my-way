@@ -22,7 +22,7 @@ form.addEventListener('submit', (event) => {
     return;
   }
   // navigate to main app page
-  window.location.href="/app.html"
+  window.location.href="app.html"
   // remove feedback classes from reportDiv
 })
 const removeFeedbackClasses = () => {
