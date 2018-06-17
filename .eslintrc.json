@@ -1,12 +1,31 @@
 {
-	"extends": "airbnb",
-	"rules": {
-		"linebreak-style": ["warn", "windows"],
-		"arrow-body-style": ["error", "always"],
-		"strict": ["error", "never"],
-		"object-curly-newline": ["error", {
-			"consistent": true
-		}],
-		"function-paren-newline": ["warn", "consistent"]
-	}
+  "extends": "airbnb",
+  "plugins": [
+    "mocha"
+  ],
+  "env": {
+    "commonjs": true,
+    "node": true,
+    "mocha": true
+  },
+  "globals": {
+    "expect": true
+  },
+  "rules": {
+    "linebreak-style": ["warn", "windows"],
+    "arrow-body-style": ["error", "always"],
+    "strict": ["error", "never"],
+    "object-curly-newline": ["error", { "consistent": true }],
+    "function-paren-newline": ["warn", "consistent"],
+    "mocha/no-exclusive-tests": "error",
+    "mocha/no-mocha-arrows": "error"
+  },
+  "overrides": [{
+    "files": ["**/*.spec.js"],
+    "rules": {
+      "func-names": "off",
+      "no-unused-expressions": "off",
+      "prefer-arrow-callback": "off"
+    }
+  }]
 }
