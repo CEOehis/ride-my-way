@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/Felglitzzz/EventManager.svg?branch=develop)](https://travis-ci.org/CEOehis/ride-my-way)
 [![Coverage Status](https://coveralls.io/repos/github/CEOehis/ride-my-way/badge.svg?branch=develop)](https://coveralls.io/github/CEOehis/ride-my-way?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/12f9a9932f3944857e2c/maintainability)](https://codeclimate.com/github/CEOehis/ride-my-way/maintainability)
+[![codecov](https://codecov.io/gh/CEOehis/ride-my-way/branch/develop/graph/badge.svg)](https://codecov.io/gh/CEOehis/ride-my-way)
 
 Ride-my-way App is a carpooling application that provides drivers with the ability to create ride offers
 and passengers to join available ride offers.
