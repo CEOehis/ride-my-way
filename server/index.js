@@ -30,7 +30,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-  res.json({message: 'may the force be with you!'});
+  res.json({ message: 'may the force be with you!' });
 });
 
 // log errors
@@ -46,7 +46,9 @@ app.use(
 );
 
 // configure port and listen for requests
-const port = parseInt((process.env.NODE_ENV === 'test' ? 8378 : process.env.PORT), 10) || 1337;
+const port =
+  parseInt(process.env.NODE_ENV === 'test' ? 8378 : process.env.PORT, 10) ||
+  1337;
 const server = app.listen(port, () => {
   logger.log(
     'info',
