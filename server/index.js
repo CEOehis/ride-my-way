@@ -1,10 +1,14 @@
 import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
 import express from 'express';
 import expressWinston from 'express-winston';
 import morgan from 'morgan';
 import winston from 'winston';
 
 import logger from './utils/logger';
+
+// import dotenv config at top level
+dotenv.config();
 
 // set up express app
 const app = express();

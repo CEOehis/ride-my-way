@@ -3,3 +3,4 @@ dist-server
 .nyc_output
 coverage
 coverage*
+.env
