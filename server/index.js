@@ -54,3 +54,6 @@ const server = app.listen(port, () => {
     port,
   );
 });
+
+export default app;
+exports.server = server;
