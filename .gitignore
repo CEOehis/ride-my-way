@@ -4,3 +4,4 @@ dist-server
 coverage
 coverage*
 .env
+.vscode
