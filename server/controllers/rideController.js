@@ -36,7 +36,7 @@ export default class Ride {
     // get rideid from request object
     const rideId = parseInt(req.params.id, 10);
     // check within datastore if ride offer with rideid exists
-    for (let i = 0; i < RideOffers.length; i += 0) {
+    for (let i = 0; i < RideOffers.length; i += 1) {
       if (RideOffers[i].id === rideId) {
         // ride offer found.
         return res.status(200).json({
