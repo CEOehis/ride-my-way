@@ -51,4 +51,32 @@ export default class Ride {
       message: 'resource not found',
     });
   }
+
+  /**
+   * Create new ride offer
+   *
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @returns {json} json object with status and ride response
+   * @memberof Ride
+   */
+  static createRideOffer(req, res) {
+    // get data from request body
+    const { from, to, seats, userId, pricePerSeat } = req.body;
+    RideOffers.push({
+      id: RideOffers.length + 1,
+      from,
+      to,
+      seats,
+      userId,
+      pricePerSeat,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+    return res.status(200).json({
+      status: 'success',
+      ride: RideOffers[RideOffers.length - 1],
+    });
+  }
 }

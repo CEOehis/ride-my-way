@@ -14,7 +14,7 @@ describe('RIDE CONTROLLER API', function () {
     to: 'Port Liliane',
     seats: 2,
     userId: 5,
-    price_per_seat: 311,
+    pricePerSeat: 311,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -71,6 +71,41 @@ describe('RIDE CONTROLLER API', function () {
           expect(res.body.message).to.equal('resource not found');
           done();
         });
+    });
+  });
+
+  describe('POST ride offer route handler', function () {
+    describe('when passed valid data', function () {
+      it('should respond with success message along with created ride offer resource', function (done) {
+        chai
+          .request(app)
+          .post('/api/v1/rides')
+          .send({
+            id: RideOffers.length + 1,
+            from: 'Lake Tobinport',
+            to: 'East Brianbury',
+            seats: 1,
+            userId: 1,
+            pricePerSeat: 241,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(200);
+            expect(res.type).to.equal('application/json');
+            expect(res.body.status).to.equal('success');
+            expect(res.body.ride).to.be.an('object');
+            expect(res.body.ride).to.include.keys(
+              'from',
+              'to',
+              'seats',
+              'userId',
+              'pricePerSeat',
+            );
+            done();
+          });
+      });
     });
   });
 });

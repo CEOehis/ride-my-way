@@ -13,7 +13,7 @@ for (let i = 1; i < 10; i += 1) {
     to: faker.address.city(),
     seats: faker.random.number(3),
     userId: faker.random.number(10),
-    price_per_seat: +faker.commerce.price(),
+    pricePerSeat: +faker.commerce.price(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
