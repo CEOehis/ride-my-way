@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build:dev": "babel server -d dist-server",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "coverage": "npm run codecov && npm run coveralls",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "format:server": "prettier --write server/**/*.js",
     "lint": "eslint ./ --fix",
     "precommit": "lint-staged && npm run test",
