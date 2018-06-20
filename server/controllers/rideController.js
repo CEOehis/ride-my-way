@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator/check';
 import { RideOffers } from '../dataStore/RideOffers';
 
 /**
@@ -62,6 +63,11 @@ export default class Ride {
    * @memberof Ride
    */
   static createRideOffer(req, res) {
+    // check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.mapped() });
+    }
     // get data from request body
     const { from, to, seats, userId, pricePerSeat } = req.body;
     RideOffers.push({

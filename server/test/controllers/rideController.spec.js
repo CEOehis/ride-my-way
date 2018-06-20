@@ -107,5 +107,28 @@ describe('RIDE CONTROLLER API', function () {
           });
       });
     });
+
+    describe('when passed invalid data', function () {
+      it('should not create a new ride offer', function (done) {
+        chai
+          .request(app)
+          .post('/api/v1/rides')
+          .send({
+            id: RideOffers.length + 1,
+            from: '   ',
+            to: 'East Brianbury',
+            userId: 1,
+            pricePerSeat: 241,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(422);
+            expect(Object.keys(res.body.errors).length).to.be.above(0);
+            done();
+          });
+      });
+    });
   });
 });
