@@ -30,7 +30,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
   });
 
   describe('POST ride offer request route handler', function () {
-    it('should create a new request to an existing ride offer', function () {
+    it('should create a new request to an existing ride offer', function (done) {
       chai
         .request(app)
         .post('/api/v1/rides/1/requests')
@@ -42,9 +42,26 @@ describe('RIDE REQUEST CONTROLLER API', function () {
           expect(res.status).to.equal(200);
           expect(res.body.status).to.equal('success');
           expect(res.body.message).to.equal('request to join ride successful');
+          done();
         });
     });
-    it('should not create a request for a non-existing ride offer');
+
+    it('should not create a request for a non-existing ride offer', function (done) {
+      chai
+        .request(app)
+        .post('/api/v1/rides/500/requests')
+        .send({
+          userId: 3,
+        })
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(404);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.message).to.equal('The requested ride offer does not exist');
+          done();
+        });
+    });
+
     it('should not create a request to a ride offer created by the same user');
   });
 });
