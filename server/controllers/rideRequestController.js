@@ -1,7 +1,22 @@
 import { RideOffers } from '../dataStore/RideOffers';
 import { RideRequests } from '../dataStore/RideRequests';
 
+/**
+ * controller class to handle REST routes for ride requests
+ *
+ * @export
+ * @class RideRequest
+ */
 export default class RideRequest {
+  /**
+   * create a new ride request
+   *
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @returns {json} json object with status and response message
+   * @memberof RideRequest
+   */
   static createRequest(req, res) {
     const rideId = parseInt(req.params.rideId, 10);
     // rather than loop through entire ride offer collection
