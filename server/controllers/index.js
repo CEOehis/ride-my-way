@@ -1,3 +1,4 @@
 import Ride from './rideController';
+import RideRequest from './rideRequestController';
 
-export default Ride;
+export { Ride, RideRequest };

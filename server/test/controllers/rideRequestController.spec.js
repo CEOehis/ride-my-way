@@ -35,14 +35,13 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         .request(app)
         .post('/api/v1/rides/1/requests')
         .send({
-          ride: 1,
           userId: 3,
         })
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(200);
-          expect(res.body.status).to.eql('success');
-          expect(res.body.message).to.eql('request to join ride successful');
+          expect(res.body.status).to.equal('success');
+          expect(res.body.message).to.equal('request to join ride successful');
         });
     });
     it('should not create a request for a non-existing ride offer');
