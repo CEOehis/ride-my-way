@@ -57,11 +57,29 @@ describe('RIDE REQUEST CONTROLLER API', function () {
           expect(err).to.not.exist;
           expect(res.status).to.equal(404);
           expect(res.body.status).to.equal('error');
-          expect(res.body.message).to.equal('The requested ride offer does not exist');
+          expect(res.body.message).to.equal(
+            'The requested ride offer does not exist',
+          );
           done();
         });
     });
 
-    it('should not create a request to a ride offer created by the same user');
+    it('should not create a request to a ride offer created by the same user', function (done) {
+      chai
+        .request(app)
+        .post('/api/v1/rides/1/requests')
+        .send({
+          userId: 5,
+        })
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(422);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.message).to.equal(
+            'You can not request for a ride you offered',
+          );
+          done();
+        });
+    });
   });
 });

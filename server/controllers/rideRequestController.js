@@ -17,6 +17,13 @@ export default class RideRequest {
       });
     }
     const { userId } = req.body;
+    // coerce both values to numbers, then compare with strice equality
+    if (+RideOffers[rideId - 1].userId === +userId) {
+      return res.status(422).json({
+        status: 'error',
+        message: 'You can not request for a ride you offered',
+      });
+    }
     RideRequests.push({
       id: RideRequest.length + 1,
       ride: rideId,
