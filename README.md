@@ -23,9 +23,54 @@ the ride leaves, where it is headed e.t.c
 * [ ] Users can only see and respond to ride offers from their friends on the application .
 * [ ] Passengers get real time notifications when their request is accepted or rejected
 
+
+## Endpoints and Actions
+| Verb     | Endpoint                  | Action                         |
+| :------- | :------------------------ | :----------------------------- |
+| GET      | /rides                    | Fetch all ride offers          |
+| POST     | /rides                    | Create a ride offer            |
+| GET      | /rides/\<rideId>          | Fetch a single ride offer      |
+| POST     | /rides/\<rideId>/requests | Make a request to join a ride  |
+
+## Technologies Used
+
+* [NodeJS](https://nodejs.org/en/) - A Javascript runtime built on chrome V8 engine that uses an event-driven non-blocking I/O model that makes it lightweight and efficient.
+* [ExpressJs](https://expressjs.com/) - A minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
+
+## Installation
+
+1. Install [`node`](https://nodejs.org/en/download/), version 8 or greater
+
+2. Clone the repository
+
+    ```
+    git clone git@github.com:CEOehis/ride-my-way.git
+    ```
+
+3. Navigate to the project directory
+
+    ```
+    cd ~/path/to/ride-my-way
+    ```
+
+4. Install all dependencies
+
+    ```
+    npm install
+    ```
+5. Start the app
+
+    ```
+    npm run watch:serve-dev
+    ```
+
+## API
+
+API is live on https://\<app-name>.herokuapp.com
+
 ## UI templates
 
-https://ceoehis.github.io/ride-my-way/UI
+UI is hosted on https://ceoehis.github.io/ride-my-way/UI
 
 * [x] User signup and signin pages.
 
