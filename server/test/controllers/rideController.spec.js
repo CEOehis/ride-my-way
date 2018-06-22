@@ -92,7 +92,7 @@ describe('RIDE CONTROLLER API', function () {
           })
           .end((err, res) => {
             expect(err).to.not.exist;
-            expect(res.status).to.equal(200);
+            expect(res.status).to.equal(201);
             expect(res.type).to.equal('application/json');
             expect(res.body.status).to.equal('success');
             expect(res.body.ride).to.be.an('object');

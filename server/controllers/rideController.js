@@ -80,7 +80,7 @@ export default class Ride {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
-    return res.status(200).json({
+    return res.status(201).json({
       status: 'success',
       ride: RideOffers[RideOffers.length - 1],
     });
