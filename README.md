@@ -66,7 +66,7 @@ the ride leaves, where it is headed e.t.c
 
 ## API
 
-API is live on https://api-ridemyway.herokuapp.com
+API is live on https://api-ridemyway.herokuapp.com/api/v1/
 
 ## UI templates
 
