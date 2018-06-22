@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npm run clean && npm run build:dev",
     "build:dev": "babel server -d dist-server",
+    "clean": "rm -rf dist-server",
     "codecov": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "coverage": "npm run codecov && npm run coveralls",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
@@ -12,7 +14,9 @@
     "lint": "eslint ./ --fix",
     "precommit": "lint-staged && npm run test",
     "prepush": "npm run test",
+    "serve": "node dist-server/index.js",
     "serve:dev": "nodemon dist-server/index.js",
+    "start": "npm run build && npm run serve",
     "watch:dev": "babel -w server -d dist-server",
     "watch:serve-dev": "npm run build:dev && npm-run-all --parallel watch:dev serve:dev",
     "test": "cross-env NODE_ENV=test nyc mocha --timeout 15000 --compilers js:babel-register --require babel-polyfill server/test --exit"
