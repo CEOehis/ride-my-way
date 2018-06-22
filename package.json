@@ -74,5 +74,9 @@
     "express-winston": "^2.5.1",
     "morgan": "^1.9.0",
     "winston": "^2.4.2"
+  },
+  "engines": {
+    "node": "8.7.0",
+    "npm": "6.1.0"
   }
 }
