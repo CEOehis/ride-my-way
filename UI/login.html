@@ -60,7 +60,6 @@
     let menu = document.querySelector('.menu');
     let navLinks = document.querySelector('.nav-links');
     menu.addEventListener('click', function () {
-      console.log('menu')
       let navClasses = [...navLinks.classList];
       if (navClasses.includes('expanded')) {
         navLinks.classList.remove('expanded');
