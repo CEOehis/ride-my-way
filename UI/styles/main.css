@@ -396,9 +396,13 @@ html, body {
   display: block;
 }
 
-.user-profile {
+.user-profile, .user-profile-summary {
   display: flex;
   align-items: center;
+}
+
+.user-profile {
+  justify-content: space-between;
 }
 
 .user-profile-info {
@@ -578,6 +582,10 @@ html, body {
   .navbar {
     padding-left: 0;
     padding-right: 0;
+  }
+
+  .user-profile {
+    display: block;
   }
 }
 
