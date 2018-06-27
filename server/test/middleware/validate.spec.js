@@ -129,32 +129,45 @@ describe('Validate middleware', function () {
 
   describe('rideRequestValidator method', function () {
     beforeEach(function () {
-      req = {
-        body: {
-          from: '',
-          to: '',
-          seats: 3,
-          pricePerSeat: 240,
-        },
-      };
       next = (err) => {
         return err;
       };
     });
     describe('`userId` field validation', function () {
-      it('should validate that it is not empty', function () {});
-      it('should validate that a number was supplied', function () {});
-      it('should not accept an alphanumeric entry', function () {});
+      it('should validate that it is not empty', function () {
+        req.body.userId = '';
+        validate.rideRequestValidator(req, res, next);
+        expect(req.body.validationErrors.userId).to.exist;
+        expect(req.body.validationErrors.userId).to.equal(
+          'User id cannot be empty',
+        );
+      });
+      it('should validate that a number was supplied', function () {
+        req.body.userId = 'awesome Number';
+        validate.rideRequestValidator(req, res, next);
+        expect(req.body.validationErrors.userId).to.exist;
+        expect(req.body.validationErrors.userId).to.equal(
+          'userId should be a number',
+        );
+      });
+      it('should not accept an alphanumeric entry', function () {
+        req.body.userId = '9ga9';
+        validate.rideRequestValidator(req, res, next);
+        expect(req.body.validationErrors.userId).to.exist;
+        expect(req.body.validationErrors.userId).to.equal(
+          'userId should be a number',
+        );
+      });
     });
     it('should add an `errors` object to the request body', function (done) {
-      validate.rideOfferValidator(req, res, next);
+      validate.rideRequestValidator(req, res, next);
       expect(req.body.validationErrors).to.exist;
       done();
     });
 
     it('should call the next middleware', function (done) {
       const nextSpy = spy();
-      validate.rideOfferValidator(req, res, nextSpy);
+      validate.rideRequestValidator(req, res, nextSpy);
       expect(nextSpy.called).to.equal(true);
       done();
     });

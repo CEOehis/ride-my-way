@@ -72,6 +72,13 @@ export default class validate {
       errors.userId = 'User id cannot be empty';
     }
 
+    if (userId) {
+      const regex = /^[a-z0-9]+$/i;
+      if (regex.test(userId)) {
+        errors.userId = 'userId should be a number';
+      }
+    }
+
     if (userId && Number.isNaN(parseInt(userId, 10))) {
       errors.userId = 'userId should be a number';
     }
