@@ -1,3 +1,4 @@
+import isEmpty from 'lodash/isEmpty';
 import { RideOffers } from '../dataStore/RideOffers';
 import { RideRequests } from '../dataStore/RideRequests';
 
@@ -18,6 +19,11 @@ export default class RideRequest {
    * @memberof RideRequest
    */
   static createRequest(req, res) {
+    // check for validation errors
+    const errors = req.body.validationErrors;
+    if (!isEmpty(errors)) {
+      return res.status(400).json({ errors });
+    }
     const rideId = parseInt(req.params.rideId, 10);
     // rather than loop through entire ride offer collection
     // get their id's and use Array.prototype.includes() to
