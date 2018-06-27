@@ -18,11 +18,10 @@ the ride leaves, where it is headed e.t.c
 * [ ] Drivers can view the requests to the ride offer they created.
 * [ ] Drivers can either accept or reject a ride request.
 
-## Extra Features:
 
-* [ ] Users can only see and respond to ride offers from their friends on the application .
-* [ ] Passengers get real time notifications when their request is accepted or rejected
+## API
 
+API is live on https://api-ridemyway.herokuapp.com/api/v1/
 
 ## Endpoints and Actions
 | Verb     | Endpoint                  | Action                         |
@@ -63,10 +62,6 @@ the ride leaves, where it is headed e.t.c
     ```
     npm run watch:serve-dev
     ```
-
-## API
-
-API is live on https://api-ridemyway.herokuapp.com/api/v1/
 
 ## UI templates
 
