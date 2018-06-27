@@ -23,7 +23,7 @@ export default class validate {
       errors.from = 'Ride offer origin is required';
     }
     if (from && from.length < 2) {
-      errors.from = 'Ride offer origin is required';
+      errors.from = 'Ride offer origin must be 2 characters or more';
     }
     if (from) {
       const regex = /^[a-z0-9]+$/i;
@@ -31,11 +31,18 @@ export default class validate {
         errors.from = 'Ride offer origin should be alphanumeric';
       }
     }
-    if (!to || to.trim() === '') {
+    to = to.toString().trim();
+    if (!to) {
       errors.to = 'Ride offer destination is required';
     }
-    if (to && to.length < 1) {
-      errors.to = 'Ride offer destination is required';
+    if (to && to.length < 2) {
+      errors.to = 'Ride offer destination must be 2 characters or more';
+    }
+    if (to) {
+      const regex = /^[a-z0-9]+$/i;
+      if (!regex.test(to)) {
+        errors.to = 'Ride offer destination should be alphanumeric';
+      }
     }
     if (!seats) {
       errors.seats = 'Specify number of available seats';

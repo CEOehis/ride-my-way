@@ -26,45 +26,65 @@ describe('Validate middleware', function () {
         req.body.from = '';
         validate.rideOfferValidator(req, res, next);
         expect(req.body.validationErrors.from).to.exist;
-        expect(req.body.validationErrors.from).to.equal('Ride offer origin is required');
+        expect(req.body.validationErrors.from).to.equal(
+          'Ride offer origin is required',
+        );
       });
       it('should check if it is less than two characters long', function () {
         req.body.from = 'a';
         validate.rideOfferValidator(req, res, next);
         expect(req.body.validationErrors.from).to.exist;
-        expect(req.body.validationErrors.from).to.equal('Ride offer origin is required');
+        expect(req.body.validationErrors.from).to.equal(
+          'Ride offer origin must be 2 characters or more',
+        );
       });
       it('should check if it is alphanumeric', function () {
         req.body.from = '$%@#';
         validate.rideOfferValidator(req, res, next);
         expect(req.body.validationErrors.from).to.exist;
-        expect(req.body.validationErrors.from).to.equal('Ride offer origin should be alphanumeric');
+        expect(req.body.validationErrors.from).to.equal(
+          'Ride offer origin should be alphanumeric',
+        );
       });
     });
 
     describe('`to` field validation', function () {
       it('should check if it is empty', function () {
+        req.body.to = '';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.to).to.exist;
+        expect(req.body.validationErrors.to).to.equal(
+          'Ride offer destination is required',
+        );
       });
       it('should check if it is less than two characters long', function () {
+        req.body.to = 'a';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.to).to.exist;
+        expect(req.body.validationErrors.to).to.equal(
+          'Ride offer destination must be 2 characters or more',
+        );
+      });
+      it('should check if it is alphanumeric', function () {
+        req.body.to = '$%@#';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.to).to.exist;
+        expect(req.body.validationErrors.to).to.equal(
+          'Ride offer destination should be alphanumeric',
+        );
       });
     });
 
     describe('`seats` field validation', function () {
-      it('should check if it is empty', function () {
-      });
-      it('should check if it is less than two characters long', function () {
-      });
-      it('should check if a number was supplied', function () {
-      });
+      it('should check if it is empty', function () {});
+      it('should check if it is less than two characters long', function () {});
+      it('should check if a number was supplied', function () {});
     });
 
     describe('`seats` field validation', function () {
-      it('should check if it is empty', function () {
-      });
-      it('should check if it is less than two characters long', function () {
-      });
-      it('should check if a number was supplied', function () {
-      });
+      it('should check if it is empty', function () {});
+      it('should check if it is less than two characters long', function () {});
+      it('should check if a number was supplied', function () {});
     });
 
     it('should add an `validationErrors` object to the request body', function (done) {
@@ -96,12 +116,9 @@ describe('Validate middleware', function () {
       };
     });
     describe('`userId` field validation', function () {
-      it('should validate that it is not empty', function () {
-      });
-      it('should validate that a number was supplied', function () {
-      });
-      it('should not accept an alphanumeric entry', function () {
-      });
+      it('should validate that it is not empty', function () {});
+      it('should validate that a number was supplied', function () {});
+      it('should not accept an alphanumeric entry', function () {});
     });
     it('should add an `errors` object to the request body', function (done) {
       validate.rideOfferValidator(req, res, next);
