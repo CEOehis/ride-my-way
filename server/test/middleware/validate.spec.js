@@ -76,9 +76,22 @@ describe('Validate middleware', function () {
     });
 
     describe('`seats` field validation', function () {
-      it('should check if it is empty', function () {});
-      it('should check if it is less than two characters long', function () {});
-      it('should check if a number was supplied', function () {});
+      it('should check if it is empty', function () {
+        req.body.seats = '';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.seats).to.exist;
+        expect(req.body.validationErrors.seats).to.equal(
+          'Specify number of available seats',
+        );
+      });
+      it('should check if a number was supplied', function () {
+        req.body.seats = 'this is just wrong';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.seats).to.exist;
+        expect(req.body.validationErrors.seats).to.equal(
+          'Available seats should be a number',
+        );
+      });
     });
 
     describe('`seats` field validation', function () {

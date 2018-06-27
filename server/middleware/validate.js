@@ -44,6 +44,7 @@ export default class validate {
         errors.to = 'Ride offer destination should be alphanumeric';
       }
     }
+    seats = seats.toString().trim();
     if (!seats) {
       errors.seats = 'Specify number of available seats';
     }
