@@ -17,11 +17,12 @@ export default class validate {
   static rideOfferValidator(req, res, next) {
     const errors = {};
 
-    const { from, to, seats, pricePerSeat } = req.body;
-    if (!from || from.trim() === '') {
+    let { from, to, seats, pricePerSeat } = req.body;
+    from = from.toString().trim();
+    if (!from) {
       errors.from = 'Ride offer origin is required';
     }
-    if (from && from.length < 1) {
+    if (from && from.length < 2) {
       errors.from = 'Ride offer origin is required';
     }
     if (!to || to.trim() === '') {
