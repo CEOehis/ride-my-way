@@ -81,7 +81,7 @@ describe('RIDE CONTROLLER API', function () {
           .request(app)
           .post('/api/v1/rides')
           .send({
-            id: RideOffers.length + 1,
+            // id: RideOffers.length + 1,
             from: 'Lake Tobinport',
             to: 'East Brianbury',
             seats: 1,

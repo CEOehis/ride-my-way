@@ -1,4 +1,4 @@
-import { validationResult } from 'express-validator/check';
+import isEmpty from 'lodash/isEmpty';
 import { RideOffers } from '../dataStore/RideOffers';
 
 /**
@@ -64,9 +64,9 @@ export default class Ride {
    */
   static createRideOffer(req, res) {
     // check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.mapped() });
+    const errors = req.body.validationErrors;
+    if (!isEmpty(errors)) {
+      return res.status(400).json({ errors });
     }
     // get data from request body
     const { from, to, seats, userId, pricePerSeat } = req.body;
