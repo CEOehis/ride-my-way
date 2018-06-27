@@ -27,7 +27,7 @@ export default class validate {
     }
     if (from) {
       const regex = /^([0-9]|[a-z ])+(\w+)$/i;
-      if (!regex.test(from)) {
+      if (from.length >= 2 && !regex.test(from)) {
         errors.from = 'Ride offer origin should be alphanumeric';
       }
     }
@@ -40,7 +40,7 @@ export default class validate {
     }
     if (to) {
       const regex = /^([0-9]|[a-z ])+(\w+)$/i;
-      if (!regex.test(to)) {
+      if (to.length >= 2 && !regex.test(to)) {
         errors.to = 'Ride offer destination should be alphanumeric';
       }
     }
@@ -73,8 +73,8 @@ export default class validate {
     }
 
     if (userId) {
-      const regex = /^[a-z0-9]+$/i;
-      if (regex.test(userId)) {
+      const regex = /^\d+$/i;
+      if (!regex.test(userId)) {
         errors.userId = 'userId should be a number';
       }
     }
