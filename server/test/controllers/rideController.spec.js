@@ -124,7 +124,7 @@ describe('RIDE CONTROLLER API', function () {
           })
           .end((err, res) => {
             expect(err).to.not.exist;
-            expect(res.status).to.equal(422);
+            expect(res.status).to.equal(400);
             expect(Object.keys(res.body.errors).length).to.be.above(0);
             done();
           });

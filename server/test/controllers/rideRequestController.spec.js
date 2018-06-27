@@ -73,7 +73,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         })
         .end((err, res) => {
           expect(err).to.not.exist;
-          expect(res.status).to.equal(422);
+          expect(res.status).to.equal(400);
           expect(res.body.status).to.equal('error');
           expect(res.body.message).to.equal(
             'You can not request for a ride you offered',
