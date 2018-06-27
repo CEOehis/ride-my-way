@@ -35,6 +35,10 @@ describe('Validate middleware', function () {
         expect(req.body.validationErrors.from).to.equal('Ride offer origin is required');
       });
       it('should check if it is alphanumeric', function () {
+        req.body.from = '$%@#';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.from).to.exist;
+        expect(req.body.validationErrors.from).to.equal('Ride offer origin should be alphanumeric');
       });
     });
 

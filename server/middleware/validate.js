@@ -25,6 +25,12 @@ export default class validate {
     if (from && from.length < 2) {
       errors.from = 'Ride offer origin is required';
     }
+    if (from) {
+      const regex = /^[a-z0-9]+$/i;
+      if (!regex.test(from)) {
+        errors.from = 'Ride offer origin should be alphanumeric';
+      }
+    }
     if (!to || to.trim() === '') {
       errors.to = 'Ride offer destination is required';
     }
