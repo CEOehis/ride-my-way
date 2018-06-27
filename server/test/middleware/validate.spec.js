@@ -94,10 +94,23 @@ describe('Validate middleware', function () {
       });
     });
 
-    describe('`seats` field validation', function () {
-      it('should check if it is empty', function () {});
-      it('should check if it is less than two characters long', function () {});
-      it('should check if a number was supplied', function () {});
+    describe('`pricePerSeat` field validation', function () {
+      it('should check if it is empty', function () {
+        req.body.pricePerSeat = '';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.pricePerSeat).to.exist;
+        expect(req.body.validationErrors.pricePerSeat).to.equal(
+          'Price must not be empty',
+        );
+      });
+      it('should check if a number was supplied', function () {
+        req.body.pricePerSeat = 'this is just wrong';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.pricePerSeat).to.exist;
+        expect(req.body.validationErrors.pricePerSeat).to.equal(
+          'Price should be a number',
+        );
+      });
     });
 
     it('should add an `validationErrors` object to the request body', function (done) {

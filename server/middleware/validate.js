@@ -51,6 +51,7 @@ export default class validate {
     if (seats && Number.isNaN(parseInt(seats, 10))) {
       errors.seats = 'Available seats should be a number';
     }
+    pricePerSeat = pricePerSeat.toString().trim();
     if (!pricePerSeat) {
       errors.pricePerSeat = 'Price must not be empty';
     }
