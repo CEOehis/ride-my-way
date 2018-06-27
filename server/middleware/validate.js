@@ -18,7 +18,7 @@ export default class validate {
     const errors = {};
 
     let { from, to, seats, pricePerSeat } = req.body;
-    from = from.toString().trim();
+    from = from && from.toString().trim();
     if (!from) {
       errors.from = 'Ride offer origin is required';
     }
@@ -26,12 +26,12 @@ export default class validate {
       errors.from = 'Ride offer origin must be 2 characters or more';
     }
     if (from) {
-      const regex = /^[a-z0-9]+$/i;
+      const regex = /^([0-9]|[a-z ])+(\w+)$/i;
       if (!regex.test(from)) {
         errors.from = 'Ride offer origin should be alphanumeric';
       }
     }
-    to = to.toString().trim();
+    to = to && to.toString().trim();
     if (!to) {
       errors.to = 'Ride offer destination is required';
     }
@@ -39,19 +39,19 @@ export default class validate {
       errors.to = 'Ride offer destination must be 2 characters or more';
     }
     if (to) {
-      const regex = /^[a-z0-9]+$/i;
+      const regex = /^([0-9]|[a-z ])+(\w+)$/i;
       if (!regex.test(to)) {
         errors.to = 'Ride offer destination should be alphanumeric';
       }
     }
-    seats = seats.toString().trim();
+    seats = seats && seats.toString().trim();
     if (!seats) {
       errors.seats = 'Specify number of available seats';
     }
     if (seats && Number.isNaN(parseInt(seats, 10))) {
       errors.seats = 'Available seats should be a number';
     }
-    pricePerSeat = pricePerSeat.toString().trim();
+    pricePerSeat = pricePerSeat && pricePerSeat.toString().trim();
     if (!pricePerSeat) {
       errors.pricePerSeat = 'Price must not be empty';
     }
