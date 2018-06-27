@@ -23,6 +23,10 @@ describe('Validate middleware', function () {
     });
     describe('`from` field validation', function () {
       it('should check if it is empty', function () {
+        req.body.from = '';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.from).to.exist;
+        expect(req.body.validationErrors.from).to.equal('Ride offer origin is required');
       });
       it('should check if it is less than two characters long', function () {
       });
