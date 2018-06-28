@@ -68,10 +68,12 @@
   },
   "dependencies": {
     "babel-register": "^6.26.0",
+    "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "express-winston": "^2.5.1",
+    "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.10",
     "morgan": "^1.9.0",
     "pg": "^7.4.3",

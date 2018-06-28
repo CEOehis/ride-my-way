@@ -1,5 +1,5 @@
 import express from 'express';
-import { Ride, RideRequest } from '../controllers';
+import { Ride, RideRequest, User } from '../controllers';
 import validate from '../middleware/validate';
 
 const router = express.Router();
@@ -12,5 +12,6 @@ router.post(
   validate.rideRequestValidator,
   RideRequest.createRequest,
 );
+router.post('/auth/signup', User.signup);
 
 export default router;
