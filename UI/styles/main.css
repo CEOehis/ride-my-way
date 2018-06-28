@@ -289,12 +289,14 @@ html, body {
 .ride-info {
   grid-column: span 4/9;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.price {
-  font-weight: bold;
-  font-size: 30px;
-  margin: 0;
+.seats {
+  /* font-weight: bold; */
+  font-size: 25px;
   line-height: 1;
 }
 
@@ -639,8 +641,8 @@ html, body {
   .ride-summary .profile img {
     display: none;
   }
-  .price {
-    /* font-size: 20px; */
+  .seats {
+    font-size: 20px;
   }
 
   .trip {
