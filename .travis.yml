@@ -3,6 +3,12 @@ language: node_js
 node_js:
   - node
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database ridemyway_test;' -U postgres
+
 cache:
   directories:
     - "node_modules"
