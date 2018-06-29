@@ -2,11 +2,20 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import bcrypt from 'bcrypt';
 
+import pool from '../../models/db';
 import app, { server } from '../../index';
 
 chai.use(chaiHttp);
 
 describe('USER CONTROLLER API', function () {
+  // empty users table
+  before(function (done) {
+    pool
+      .query('DELETE FROM requests; DELETE FROM rides; DELETE FROM users;')
+      .then(() => { done(); })
+      .catch((error) => { throw error; });
+  });
+
   after(function (done) {
     server.close();
     done();
