@@ -7,7 +7,8 @@ services:
   - postgresql
 
 before_script:
-  - psql -c 'create database ridemyway_test;' -U postgres
+  - psql -c 'drop database if exists ridemyway-test;' -U postgres
+  - psql -c 'create database ridemyway-test;' -U postgres
 
 cache:
   directories:

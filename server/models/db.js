@@ -1,10 +1,25 @@
-import dotenv from 'dotenv';
 import { Pool } from 'pg';
+import dotenv from 'dotenv';
 import logger from '../utils/logger';
+import { setup } from '../config/config';
 
 dotenv.config();
 
-const pool = new Pool();
+const env = process.env.NODE_ENV || 'production';
+const config = setup[env];
+
+let poolConfig;
+// check if env is production
+if (config.use_env_variable) {
+  poolConfig = new Pool({
+    connectionString: process.env[config.use_env_variable],
+  });
+} else {
+  poolConfig = new Pool(config);
+}
+
+const pool = poolConfig;
+
 pool
   .connect()
   .then(() => {
