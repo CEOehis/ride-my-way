@@ -1,6 +1,5 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
-import bcrypt from 'bcrypt';
 
 import pool from '../../models/db';
 import app, { server } from '../../index';
@@ -31,7 +30,7 @@ describe('USER CONTROLLER API', function () {
         const userData = {
           fullName: 'John Doe',
           email: 'jdtesting@mail.com',
-          password: bcrypt.hashSync('passywordy', 10),
+          password: 'passywordy',
         };
         chai
           .request(app)
