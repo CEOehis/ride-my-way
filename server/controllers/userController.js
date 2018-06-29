@@ -2,7 +2,22 @@ import bcrypt from 'bcrypt';
 import pool from '../models/db';
 import Token from '../utils/Token';
 
+/**
+ * User controller
+ *
+ * @export
+ * @class User
+ */
 export default class User {
+  /**
+   * sign up user
+   *
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express request object
+   * @returns {json} json object with status and token/response data
+   * @memberof User
+   */
   static signup(req, res) {
     const { fullName, email, password } = req.body;
     pool
@@ -22,10 +37,62 @@ export default class User {
             });
           });
       })
-      .catch(() => {
+      .catch((e) => {
         return res.status(500).json({
           status: 'error',
-          error: 'error creating user',
+          error: e,
+        });
+      });
+  }
+
+  /**
+   * login user
+   *
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @returns {json} json object with status and token/response data
+   * @memberof User
+   */
+  static signin(req, res) {
+    const { email, password } = req.body;
+    pool
+      .query('SELECT * FROM users WHERE email=$1', [email])
+      .then((result) => {
+        const user = result.rows[0];
+        if (!user) {
+          return res.status(404).json({
+            status: 'error',
+            message: 'User does not exist',
+          });
+        }
+        // user exists so check if password supplied matches
+        return bcrypt
+          .compare(password, user.password)
+          .then((valid) => {
+            if (valid) {
+              const token = Token.generateToken(user.id);
+              return res.status(200).json({
+                status: 'success',
+                token,
+              });
+            }
+            return res.status(401).json({
+              status: 'error',
+              message: 'wrong password',
+            });
+          })
+          .catch((error) => {
+            return res.status(500).json({
+              status: 'success',
+              message: error,
+            });
+          });
+      })
+      .catch((error) => {
+        return res.status(500).json({
+          status: 'error',
+          message: error,
         });
       });
   }

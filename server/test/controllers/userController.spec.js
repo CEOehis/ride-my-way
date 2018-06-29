@@ -48,4 +48,27 @@ describe('USER CONTROLLER API', function () {
       });
     });
   });
+
+  describe('SIGN IN route handler', function () {
+    describe('when passed valid data/credentials', function () {
+      it('should authenticate a user respond with jwt', function (done) {
+        const userData = {
+          email: 'jdtesting@mail.com',
+          password: 'passywordy',
+        };
+        chai
+          .request(app)
+          .post('/api/v1/auth/login')
+          .send(userData)
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(200);
+            expect(res.type).to.equal('application/json');
+            expect(res.body.status).to.equal('success');
+            expect(res.body.token).to.be.a('string');
+            done();
+          });
+      });
+    });
+  });
 });

@@ -5,7 +5,7 @@ import { setup } from '../config/config';
 
 dotenv.config();
 
-const env = process.env.NODE_ENV || 'production';
+const env = process.env.NODE_ENV || 'development';
 const config = setup[env];
 
 let poolConfig;
