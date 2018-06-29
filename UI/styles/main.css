@@ -7,6 +7,29 @@ html, body {
   flex-direction: column;
 }
 
+/* resets */
+html, body {
+  margin: 0;
+  font-size: 16px;
+}
+
+p, ul, ol {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+/* end resets */
+
 .app-grid {
   display: grid;
   grid-column-gap: 20px;
