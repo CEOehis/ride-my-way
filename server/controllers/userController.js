@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import pool from '../models/db';
+import Token from '../utils/Token';
 
 export default class User {
   static signup(req, res) {
@@ -15,11 +15,7 @@ export default class User {
           .query('SELECT * FROM users WHERE email=$1', [email])
           .then((result) => {
             // create token
-            const token = jwt.sign(
-              { id: result.rows[0].id },
-              process.env.SECRET,
-              { expiresIn: 86400 },
-            );
+            const token = Token.generateToken(result.rows[0].id);
             return res.status(201).json({
               status: 'success',
               token,

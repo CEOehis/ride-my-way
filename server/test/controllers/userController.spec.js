@@ -12,8 +12,12 @@ describe('USER CONTROLLER API', function () {
   before(function (done) {
     pool
       .query('DELETE FROM requests; DELETE FROM rides; DELETE FROM users;')
-      .then(() => { done(); })
-      .catch((error) => { throw error; });
+      .then(() => {
+        done();
+      })
+      .catch((error) => {
+        throw error;
+      });
   });
 
   after(function (done) {
