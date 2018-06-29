@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { isEmpty } from 'lodash';
 import pool from '../models/db';
 import Token from '../utils/Token';
 
@@ -55,8 +56,13 @@ export default class User {
    * @memberof User
    */
   static signin(req, res) {
+    // check for validation errors
+    const errors = req.body.validationErrors;
+    if (!isEmpty(errors)) {
+      return res.status(400).json({ errors });
+    }
     const { email, password } = req.body;
-    pool
+    return pool
       .query('SELECT * FROM users WHERE email=$1', [email])
       .then((result) => {
         const user = result.rows[0];

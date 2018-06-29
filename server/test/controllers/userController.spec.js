@@ -69,5 +69,24 @@ describe('USER CONTROLLER API', function () {
           });
       });
     });
+
+    describe('when passed invalid data', function () {
+      it('should not authenticate user', function (done) {
+        const userData = {
+          email: 'jdtesting',
+          password: 'passywordy',
+        };
+        chai
+          .request(app)
+          .post('/api/v1/auth/login')
+          .send(userData)
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(400);
+            expect(Object.keys(res.body.errors).length).to.be.above(0);
+            done();
+          });
+      });
+    });
   });
 });

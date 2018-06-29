@@ -13,6 +13,6 @@ router.post(
   RideRequest.createRequest,
 );
 router.post('/auth/signup', User.signup);
-router.post('/auth/login', User.signin);
+router.post('/auth/login', validate.userSigninValidator, User.signin);
 
 export default router;
