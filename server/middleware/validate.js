@@ -86,4 +86,29 @@ export default class validate {
     req.body.validationErrors = errors;
     next();
   }
+
+  static userSigninValidator(req, res, next) {
+    const errors = {};
+
+    let { email } = req.body;
+    const { password } = req.body;
+    email = email && email.toString().trim();
+    if (!email) {
+      errors.email = 'email is required';
+    }
+    if (email) {
+      const emailRegex = /^(\S)+@{1}(\S)+.(\S)+$/;
+      if (!emailRegex.test(email)) {
+        errors.email = 'email address supplied is not valid';
+      }
+    }
+    if (!password) {
+      errors.password = 'password is required';
+    }
+    if (password && password.length < 6) {
+      errors.password = 'password supplied is too short';
+    }
+    req.body.validationErrors = errors;
+    next();
+  }
 }

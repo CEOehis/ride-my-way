@@ -172,4 +172,44 @@ describe('Validate middleware', function () {
       done();
     });
   });
+
+  describe('userSigninValidator method', function () {
+    describe('`email` field validation', function () {
+      it('should check if it is empty', function () {
+        req.body.email = '';
+        validate.userSigninValidator(req, res, next);
+        expect(req.body.validationErrors.email).to.exist;
+        expect(req.body.validationErrors.email).to.equal(
+          'email is required',
+        );
+      });
+      it('should check if it is an email', function () {
+        req.body.email = 'someinvalidmail';
+        validate.userSigninValidator(req, res, next);
+        expect(req.body.validationErrors.email).to.exist;
+        expect(req.body.validationErrors.email).to.equal(
+          'email address supplied is not valid',
+        );
+      });
+    });
+
+    describe('`password` field validation', function () {
+      it('should check if it is empty', function () {
+        req.body.password = '';
+        validate.userSigninValidator(req, res, next);
+        expect(req.body.validationErrors.password).to.exist;
+        expect(req.body.validationErrors.password).to.equal(
+          'password is required',
+        );
+      });
+      it('should check if it less than 6 characters long', function () {
+        req.body.password = 'pwd';
+        validate.userSigninValidator(req, res, next);
+        expect(req.body.validationErrors.password).to.exist;
+        expect(req.body.validationErrors.password).to.equal(
+          'password supplied is too short',
+        );
+      });
+    });
+  });
 });
