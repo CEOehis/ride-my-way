@@ -10,6 +10,9 @@ before_script:
   - psql -c 'drop database if exists ridemyway_test;' -U postgres
   - psql -c 'create database ridemyway_test;' -U postgres
 
+env:
+  - SECRET=creepysecret
+
 cache:
   directories:
     - "node_modules"
