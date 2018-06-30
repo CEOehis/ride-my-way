@@ -12,7 +12,7 @@ router.post(
   validate.rideRequestValidator,
   RideRequest.createRequest,
 );
-router.post('/auth/signup', User.signup);
+router.post('/auth/signup', validate.userSignupValidator, User.signup);
 router.post('/auth/login', validate.userSigninValidator, User.signin);
 
 export default router;

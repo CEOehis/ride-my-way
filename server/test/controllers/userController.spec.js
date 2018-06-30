@@ -31,6 +31,7 @@ describe('USER CONTROLLER API', function () {
           fullName: 'John Doe',
           email: 'jdtesting@mail.com',
           password: 'passywordy',
+          passwordConfirm: 'passywordy',
         };
         chai
           .request(app)
@@ -42,6 +43,27 @@ describe('USER CONTROLLER API', function () {
             expect(res.type).to.equal('application/json');
             expect(res.body.status).to.equal('success');
             expect(res.body.token).to.be.a('string');
+            done();
+          });
+      });
+    });
+
+    describe('when passed invalid/incomplete data', function () {
+      it('should not create a new user', function (done) {
+        const userData = {
+          fullName: 'John Doe',
+          email: 'invalidmail',
+          password: 'passywordy',
+        };
+        chai
+          .request(app)
+          .post('/api/v1/auth/signup')
+          .send(userData)
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(400);
+            expect(res.type).to.equal('application/json');
+            expect(Object.keys(res.body.errors).length).to.be.above(0);
             done();
           });
       });

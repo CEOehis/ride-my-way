@@ -179,9 +179,7 @@ describe('Validate middleware', function () {
         req.body.email = '';
         validate.userSigninValidator(req, res, next);
         expect(req.body.validationErrors.email).to.exist;
-        expect(req.body.validationErrors.email).to.equal(
-          'email is required',
-        );
+        expect(req.body.validationErrors.email).to.equal('email is required');
       });
       it('should check if it is an email', function () {
         req.body.email = 'someinvalidmail';
@@ -208,6 +206,74 @@ describe('Validate middleware', function () {
         expect(req.body.validationErrors.password).to.exist;
         expect(req.body.validationErrors.password).to.equal(
           'password supplied is too short',
+        );
+      });
+    });
+  });
+
+  describe('userSignupValidator method', function () {
+    describe('`fullName` field validation', function () {
+      it('should check if it is empty', function () {
+        req.body.fullName = '';
+        validate.userSignupValidator(req, res, next);
+        expect(req.body.validationErrors.fullName).to.exist;
+        expect(req.body.validationErrors.fullName).to.equal(
+          'fullName is required',
+        );
+      });
+      it('should check if it is less than 2 characters', function () {
+        req.body.fullName = 'a';
+        validate.userSignupValidator(req, res, next);
+        expect(req.body.validationErrors.fullName).to.exist;
+        expect(req.body.validationErrors.fullName).to.equal(
+          'fullName supplied is too short',
+        );
+      });
+    });
+
+    describe('`email` field validation', function () {
+      it('should check if it is empty', function () {
+        req.body.email = '';
+        validate.userSignupValidator(req, res, next);
+        expect(req.body.validationErrors.email).to.exist;
+        expect(req.body.validationErrors.email).to.equal('email is required');
+      });
+      it('should check if it is an email', function () {
+        req.body.email = 'someinvalidmail';
+        validate.userSignupValidator(req, res, next);
+        expect(req.body.validationErrors.email).to.exist;
+        expect(req.body.validationErrors.email).to.equal(
+          'email address supplied is not valid',
+        );
+      });
+    });
+
+    describe('`password` field validation', function () {
+      it('should check if it is empty', function () {
+        req.body.password = '';
+        validate.userSignupValidator(req, res, next);
+        expect(req.body.validationErrors.password).to.exist;
+        expect(req.body.validationErrors.password).to.equal(
+          'password is required',
+        );
+      });
+      it('should check if it less than 6 characters long', function () {
+        req.body.password = 'pwd';
+        validate.userSignupValidator(req, res, next);
+        expect(req.body.validationErrors.password).to.exist;
+        expect(req.body.validationErrors.password).to.equal(
+          'password supplied is too short',
+        );
+      });
+    });
+
+    describe('`passwordConfirm` field validation', function () {
+      it('should check if it is equal to `password` field', function () {
+        req.body.passwordConfirm = '';
+        validate.userSignupValidator(req, res, next);
+        expect(req.body.validationErrors.passwordConfirm).to.exist;
+        expect(req.body.validationErrors.passwordConfirm).to.equal(
+          'passwords do not match',
         );
       });
     });

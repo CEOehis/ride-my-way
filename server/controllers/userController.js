@@ -20,8 +20,13 @@ export default class User {
    * @memberof User
    */
   static signup(req, res) {
+    // check for validation errors
+    const errors = req.body.validationErrors;
+    if (!isEmpty(errors)) {
+      return res.status(400).json({ errors });
+    }
     const { fullName, email, password } = req.body;
-    pool
+    return pool
       .query(
         'INSERT INTO users(fullname, email, password, created_at) values($1, $2, $3, NOW())',
         [fullName, email, bcrypt.hashSync(password, 10)],
