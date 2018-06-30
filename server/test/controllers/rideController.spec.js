@@ -3,6 +3,9 @@ import chaiHttp from 'chai-http';
 
 import app, { server } from '../../index';
 import { RideOffers } from '../../dataStore/RideOffers';
+import Token from '../../utils/Token';
+
+const token = `Bearer ${Token.generateToken(1)}`;
 
 chai.use(chaiHttp);
 
@@ -34,6 +37,7 @@ describe('RIDE CONTROLLER API', function () {
       chai
         .request(app)
         .get('/api/v1/rides')
+        .set('Authorization', token)
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(200);
@@ -50,6 +54,7 @@ describe('RIDE CONTROLLER API', function () {
       chai
         .request(app)
         .get('/api/v1/rides/1')
+        .set('Authorization', token)
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(200);
@@ -65,6 +70,7 @@ describe('RIDE CONTROLLER API', function () {
       chai
         .request(app)
         .get('/api/v1/rides/30')
+        .set('Authorization', token)
         .end((err, res) => {
           expect(res.status).to.equal(404);
           expect(res.body.status).to.equal('error');
@@ -80,6 +86,7 @@ describe('RIDE CONTROLLER API', function () {
         chai
           .request(app)
           .post('/api/v1/rides')
+          .set('Authorization', token)
           .send({
             // id: RideOffers.length + 1,
             from: 'Lake Tobinport',
@@ -113,6 +120,7 @@ describe('RIDE CONTROLLER API', function () {
         chai
           .request(app)
           .post('/api/v1/rides')
+          .set('Authorization', token)
           .send({
             id: RideOffers.length + 1,
             from: '   ',

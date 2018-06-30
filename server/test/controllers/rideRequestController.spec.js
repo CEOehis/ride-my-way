@@ -3,6 +3,9 @@ import chaiHttp from 'chai-http';
 
 import app, { server } from '../../index';
 import { RideOffers } from '../../dataStore/RideOffers';
+import Token from '../../utils/Token';
+
+const token = `Bearer ${Token.generateToken(1)}`;
 
 chai.use(chaiHttp);
 
@@ -35,6 +38,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         chai
           .request(app)
           .post('/api/v1/rides/1/requests')
+          .set('Authorization', token)
           .send({
             userId: 3,
           })
@@ -53,6 +57,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         chai
           .request(app)
           .post('/api/v1/rides/500/requests')
+          .set('Authorization', token)
           .send({
             userId: 3,
           })
@@ -71,6 +76,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         chai
           .request(app)
           .post('/api/v1/rides/1/requests')
+          .set('Authorization', token)
           .send({
             userId: 5,
           })
@@ -91,6 +97,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         chai
           .request(app)
           .post('/api/v1/rides/1/requests')
+          .set('Authorization', token)
           .send({
             userId: '',
           })

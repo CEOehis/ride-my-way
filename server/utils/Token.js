@@ -18,6 +18,24 @@ class Token {
     });
     return token;
   }
+
+  /**
+   * Decodes jwt token
+   *
+   * @static
+   * @param {string} token
+   * @returns {number | false} decoded user id or false if invalid
+   * @memberof Token
+   */
+  static decodeToken(token) {
+    const userId = jwt.verify(token, process.env.SECRET, (err, decoded) => {
+      if (err) {
+        return false;
+      }
+      return decoded.id;
+    });
+    return userId;
+  }
 }
 
 export default Token;
