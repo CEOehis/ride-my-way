@@ -25,11 +25,18 @@ describe('RIDE CONTROLLER API', function () {
       return rideOffer[key];
     });
     pool
-      .query('SELECT * FROM users LIMIT 1')
-      .then((result) => {
-        const userId = result.rows[0].id;
-        pool
-          .query('INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)', [...values, userId]);
+      .query(
+        'INSERT INTO users (fullname, email, password) values ($1, $2, $3)',
+        ['Marylin Doe', 'md@mail.com', 'passywordy'],
+      )
+      .then(() => {
+        pool.query('SELECT * FROM users LIMIT 1').then((resulti) => {
+          const userId = resulti.rows[0].id;
+          pool.query(
+            'INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)',
+            [...values, userId],
+          );
+        });
       });
     done();
   });
@@ -58,18 +65,21 @@ describe('RIDE CONTROLLER API', function () {
 
   describe('GET single ride offer route handler', function () {
     it('should respond with a single ride offer', function (done) {
-      chai
-        .request(app)
-        .get('/api/v1/rides/1')
-        .set('Authorization', token)
-        .end((err, res) => {
-          expect(err).to.not.exist;
-          expect(res.status).to.equal(200);
-          expect(res.type).to.equal('application/json');
-          expect(res.body.status).to.equal('success');
-          expect(res.body.ride).to.be.an('object');
-          done();
-        });
+      pool.query('SELECT * FROM rides LIMIT 1').then((result) => {
+        const rideId = result.rows[0].id;
+        chai
+          .request(app)
+          .get(`/api/v1/rides/${rideId}`)
+          .set('Authorization', token)
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(200);
+            expect(res.type).to.equal('application/json');
+            expect(res.body.status).to.equal('success');
+            expect(res.body.ride).to.be.an('object');
+            done();
+          });
+      });
     });
 
     it('should respond with a "404" message if resource does not exits', function (done) {

@@ -48,20 +48,26 @@ export default class Ride {
     // get rideid from request object
     const rideId = parseInt(req.params.id, 10);
     // check within datastore if ride offer with rideid exists
-    for (let i = 0; i < RideOffers.length; i += 1) {
-      if (RideOffers[i].id === rideId) {
-        // ride offer found.
-        return res.status(200).json({
-          status: 'success',
-          ride: RideOffers[i],
+    pool
+      .query('SELECT * FROM rides WHERE id=$1', [rideId])
+      .then((result) => {
+        if (result.rowCount) {
+          return res.status(200).json({
+            status: 'success',
+            ride: result.rows[0],
+          });
+        }
+        return res.status(404).json({
+          status: 'error',
+          message: 'resource not found',
         });
-      }
-    }
-    // ride offer not found.
-    return res.status(404).json({
-      status: 'error',
-      message: 'resource not found',
-    });
+      })
+      .catch((error) => {
+        return res.status(500).json({
+          status: 'error',
+          message: error,
+        });
+      });
   }
 
   /**
