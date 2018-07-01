@@ -1,5 +1,4 @@
 import isEmpty from 'lodash/isEmpty';
-import { RideOffers } from '../dataStore/RideOffers';
 import pool from '../models/db';
 
 /**
@@ -79,6 +78,7 @@ export default class Ride {
    * @returns {json} json object with status and ride response
    * @memberof Ride
    */
+  /* eslint-disable-next-line consistent-return */
   static createRideOffer(req, res) {
     // check for validation errors
     const errors = req.body.validationErrors;
@@ -86,20 +86,34 @@ export default class Ride {
       return res.status(400).json({ errors });
     }
     // get data from request body
-    const { from, to, seats, userId, pricePerSeat } = req.body;
-    RideOffers.push({
-      id: RideOffers.length + 1,
-      from,
-      to,
-      seats,
-      userId,
-      pricePerSeat,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
-    return res.status(201).json({
-      status: 'success',
-      ride: RideOffers[RideOffers.length - 1],
-    });
+    const { origin, destination, seats, date, time } = req.body;
+    const { userId } = req;
+    pool
+      .query(
+        'INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)',
+        [origin, destination, date, time, seats, userId],
+      )
+      .then(() => {
+        return pool
+          .query('SELECT * FROM rides ORDER BY id DESC LIMIT 1')
+          .then((result) => {
+            return res.status(201).json({
+              status: 'success',
+              ride: result.rows[0],
+            });
+          })
+          .catch((error) => {
+            return res.status(500).json({
+              status: 'error',
+              message: error,
+            });
+          });
+      })
+      .catch((error) => {
+        return res.status(500).json({
+          status: 'error',
+          message: error,
+        });
+      });
   }
 }

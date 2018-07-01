@@ -101,17 +101,14 @@ describe('RIDE CONTROLLER API', function () {
       it('should respond with success message along with created ride offer resource', function (done) {
         chai
           .request(app)
-          .post('/api/v1/rides')
+          .post('/api/v1/users/rides')
           .set('Authorization', token)
           .send({
-            // id: RideOffers.length + 1,
-            from: 'Lake Tobinport',
-            to: 'East Brianbury',
+            origin: 'Lake Tobinport',
+            destination: 'East Brianbury',
             seats: 1,
-            userId: 1,
-            pricePerSeat: 241,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            date: '2018-01-07',
+            time: '14:30',
           })
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -120,11 +117,10 @@ describe('RIDE CONTROLLER API', function () {
             expect(res.body.status).to.equal('success');
             expect(res.body.ride).to.be.an('object');
             expect(res.body.ride).to.include.keys(
-              'from',
-              'to',
+              'origin',
+              'destination',
               'seats',
-              'userId',
-              'pricePerSeat',
+              'userid',
             );
             done();
           });
@@ -135,7 +131,7 @@ describe('RIDE CONTROLLER API', function () {
       it('should not create a new ride offer', function (done) {
         chai
           .request(app)
-          .post('/api/v1/rides')
+          .post('/api/v1/users/rides')
           .set('Authorization', token)
           .send({
             id: RideOffers.length + 1,

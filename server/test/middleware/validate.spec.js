@@ -11,65 +11,66 @@ describe('Validate middleware', function () {
     beforeEach(function () {
       req = {
         body: {
-          from: '',
-          to: '',
+          origin: '',
+          destination: '',
+          date: '2018-01-29',
+          time: '12:59',
           seats: 3,
-          pricePerSeat: 240,
         },
       };
       next = (err) => {
         return err;
       };
     });
-    describe('`from` field validation', function () {
+    describe('`origin` field validation', function () {
       it('should check if it is empty', function () {
-        req.body.from = '';
+        req.body.origin = '';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.from).to.exist;
-        expect(req.body.validationErrors.from).to.equal(
+        expect(req.body.validationErrors.origin).to.exist;
+        expect(req.body.validationErrors.origin).to.equal(
           'Ride offer origin is required',
         );
       });
       it('should check if it is less than two characters long', function () {
-        req.body.from = 'a';
+        req.body.origin = 'a';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.from).to.exist;
-        expect(req.body.validationErrors.from).to.equal(
+        expect(req.body.validationErrors.origin).to.exist;
+        expect(req.body.validationErrors.origin).to.equal(
           'Ride offer origin must be 2 characters or more',
         );
       });
       it('should check if it is alphanumeric', function () {
-        req.body.from = '$%@#';
+        req.body.origin = '$%@#';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.from).to.exist;
-        expect(req.body.validationErrors.from).to.equal(
+        expect(req.body.validationErrors.origin).to.exist;
+        expect(req.body.validationErrors.origin).to.equal(
           'Ride offer origin should be alphanumeric',
         );
       });
     });
 
-    describe('`to` field validation', function () {
+    describe('`destination` field validation', function () {
       it('should check if it is empty', function () {
-        req.body.to = '';
+        req.body.destination = '';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.to).to.exist;
-        expect(req.body.validationErrors.to).to.equal(
+        expect(req.body.validationErrors.destination).to.exist;
+        expect(req.body.validationErrors.destination).to.equal(
           'Ride offer destination is required',
         );
       });
       it('should check if it is less than two characters long', function () {
-        req.body.to = 'a';
+        req.body.destination = 'a';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.to).to.exist;
-        expect(req.body.validationErrors.to).to.equal(
+        expect(req.body.validationErrors.destination).to.exist;
+        expect(req.body.validationErrors.destination).to.equal(
           'Ride offer destination must be 2 characters or more',
         );
       });
       it('should check if it is alphanumeric', function () {
-        req.body.to = '$%@#';
+        req.body.destination = '$%@#';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.to).to.exist;
-        expect(req.body.validationErrors.to).to.equal(
+        expect(req.body.validationErrors.destination).to.exist;
+        expect(req.body.validationErrors.destination).to.equal(
           'Ride offer destination should be alphanumeric',
         );
       });
@@ -94,22 +95,37 @@ describe('Validate middleware', function () {
       });
     });
 
-    describe('`pricePerSeat` field validation', function () {
+    describe('`date` field validation', function () {
       it('should check if it is empty', function () {
-        req.body.pricePerSeat = '';
+        req.body.date = '';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.pricePerSeat).to.exist;
-        expect(req.body.validationErrors.pricePerSeat).to.equal(
-          'Price must not be empty',
+        expect(req.body.validationErrors.date).to.exist;
+        expect(req.body.validationErrors.date).to.equal(
+          'specify ride offer date',
         );
       });
-      it('should check if a number was supplied', function () {
-        req.body.pricePerSeat = 'this is just wrong';
+      it('should check if a valid format was supplied', function () {
+        req.body.date = 'this is just wrong';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.pricePerSeat).to.exist;
-        expect(req.body.validationErrors.pricePerSeat).to.equal(
-          'Price should be a number',
+        expect(req.body.validationErrors.date).to.exist;
+        expect(req.body.validationErrors.date).to.equal('Invalid date format');
+      });
+    });
+
+    describe('`time` field validation', function () {
+      it('should check if it is empty', function () {
+        req.body.time = '';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.time).to.exist;
+        expect(req.body.validationErrors.time).to.equal(
+          'Specify take off time',
         );
+      });
+      it('should check if a valid format was supplied', function () {
+        req.body.time = 'this is just wrong';
+        validate.rideOfferValidator(req, res, next);
+        expect(req.body.validationErrors.time).to.exist;
+        expect(req.body.validationErrors.time).to.equal('Invalid time format');
       });
     });
 

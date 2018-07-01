@@ -17,31 +17,32 @@ export default class validate {
   static rideOfferValidator(req, res, next) {
     const errors = {};
 
-    let { from, to, seats, pricePerSeat } = req.body;
-    from = from && from.toString().trim();
-    if (!from) {
-      errors.from = 'Ride offer origin is required';
+    let { origin, destination, seats, date, time } = req.body;
+    origin = origin && origin.toString().trim();
+    if (!origin) {
+      errors.origin = 'Ride offer origin is required';
     }
-    if (from && from.length < 2) {
-      errors.from = 'Ride offer origin must be 2 characters or more';
+    if (origin && origin.length < 2) {
+      errors.origin = 'Ride offer origin must be 2 characters or more';
     }
-    if (from) {
+    if (origin) {
       const regex = /^([0-9]|[a-z ])+(\w+)$/i;
-      if (from.length >= 2 && !regex.test(from)) {
-        errors.from = 'Ride offer origin should be alphanumeric';
+      if (origin.length >= 2 && !regex.test(origin)) {
+        errors.origin = 'Ride offer origin should be alphanumeric';
       }
     }
-    to = to && to.toString().trim();
-    if (!to) {
-      errors.to = 'Ride offer destination is required';
+    destination = destination && destination.toString().trim();
+    if (!destination) {
+      errors.destination = 'Ride offer destination is required';
     }
-    if (to && to.length < 2) {
-      errors.to = 'Ride offer destination must be 2 characters or more';
+    if (destination && destination.length < 2) {
+      errors.destination =
+        'Ride offer destination must be 2 characters or more';
     }
-    if (to) {
+    if (destination) {
       const regex = /^([0-9]|[a-z ])+(\w+)$/i;
-      if (to.length >= 2 && !regex.test(to)) {
-        errors.to = 'Ride offer destination should be alphanumeric';
+      if (destination.length >= 2 && !regex.test(destination)) {
+        errors.destination = 'Ride offer destination should be alphanumeric';
       }
     }
     seats = seats && seats.toString().trim();
@@ -51,12 +52,25 @@ export default class validate {
     if (seats && Number.isNaN(parseInt(seats, 10))) {
       errors.seats = 'Available seats should be a number';
     }
-    pricePerSeat = pricePerSeat && pricePerSeat.toString().trim();
-    if (!pricePerSeat) {
-      errors.pricePerSeat = 'Price must not be empty';
+    date = date && date.toString().trim();
+    if (!date) {
+      errors.date = 'specify ride offer date';
     }
-    if (pricePerSeat && Number.isNaN(parseInt(pricePerSeat, 10))) {
-      errors.pricePerSeat = 'Price should be a number';
+    if (date) {
+      const regex = /^\d{4}-(\d{2}){1}-\d{2}$/;
+      if (!regex.test(date)) {
+        errors.date = 'Invalid date format';
+      }
+    }
+    time = time && time.toString().trim();
+    if (!time) {
+      errors.time = 'Specify take off time';
+    }
+    if (time) {
+      const regex = /^\d{2}:\d{2}$/;
+      if (!regex.test(time)) {
+        errors.time = 'Invalid time format';
+      }
     }
 
     req.body.validationErrors = errors;
