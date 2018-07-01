@@ -14,8 +14,8 @@ describe('USER CONTROLLER API', function () {
       .then(() => {
         done();
       })
-      .catch((error) => {
-        throw error;
+      .catch(() => {
+        done();
       });
   });
 
