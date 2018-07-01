@@ -25,16 +25,23 @@ export default class auth {
         message: 'No token provided',
       });
     }
-    if (authorization.split(' ')[0] === 'Bearer') {
-      const token = authorization.split(' ')[1];
-      const userId = Token.decodeToken(token);
-      if (!userId) {
-        return res.status(401).json({
-          status: 'error',
-          message: 'invalid token',
-        });
-      }
+    if (authorization.split(' ')[0] !== 'Bearer') {
+      // invalid auth string
+      return res.status(401).json({
+        status: 'error',
+        message: 'invalid authorization token',
+      });
     }
+    const token = authorization.split(' ')[1];
+    const userId = Token.decodeToken(token);
+    if (!userId) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'invalid token',
+      });
+    }
+    // set user in request object for future use
+    req.userId = userId;
     // user authorised to access resource
     return next();
   }
