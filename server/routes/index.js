@@ -13,7 +13,7 @@ router.post('/auth/login', validate.userSigninValidator, User.signin);
 router.use(auth.authenticateUser);
 router.get('/rides', Ride.getAllRideOffers);
 router.get('/rides/:id', Ride.getRideOffer);
-router.post('/rides', validate.rideOfferValidator, Ride.createRideOffer);
+router.post('/users/rides', validate.rideOfferValidator, Ride.createRideOffer);
 router.post(
   '/rides/:rideId/requests',
   validate.rideRequestValidator,
