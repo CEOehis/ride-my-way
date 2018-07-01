@@ -4,6 +4,7 @@ import chaiHttp from 'chai-http';
 import app, { server } from '../../index';
 import { RideOffers } from '../../dataStore/RideOffers';
 import Token from '../../utils/Token';
+import pool from '../../models/db';
 
 const token = `Bearer ${Token.generateToken(1)}`;
 
@@ -12,19 +13,25 @@ chai.use(chaiHttp);
 describe('RIDE CONTROLLER API', function () {
   // empty out ride offers collection, then add one entry
   const rideOffer = {
-    id: 1,
-    from: 'Reichelchester',
-    to: 'Port Liliane',
+    origin: 'Reichelchester',
+    destination: 'Port Liliane',
+    date: '2018-02-18',
+    time: '12:30',
     seats: 2,
-    userId: 5,
-    pricePerSeat: 311,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   };
 
-  before(function () {
-    RideOffers.length = 0;
-    RideOffers.push(rideOffer);
+  before(function (done) {
+    const values = Object.keys(rideOffer).map((key) => {
+      return rideOffer[key];
+    });
+    pool
+      .query('SELECT * FROM users LIMIT 1')
+      .then((result) => {
+        const userId = result.rows[0].id;
+        pool
+          .query('INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)', [...values, userId]);
+      });
+    done();
   });
 
   after(function (done) {
@@ -61,7 +68,6 @@ describe('RIDE CONTROLLER API', function () {
           expect(res.type).to.equal('application/json');
           expect(res.body.status).to.equal('success');
           expect(res.body.ride).to.be.an('object');
-          expect(res.body.ride).to.eql(rideOffer);
           done();
         });
     });

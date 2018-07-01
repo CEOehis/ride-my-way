@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import { RideOffers } from '../dataStore/RideOffers';
+import pool from '../models/db';
 
 /**
  * controller class to handle REST routes
@@ -18,10 +19,20 @@ export default class Ride {
    * @memberof Ride
    */
   static getAllRideOffers(req, res) {
-    return res.status(200).json({
-      status: 'success',
-      rides: RideOffers,
-    });
+    pool
+      .query('SELECT * FROM rides')
+      .then((result) => {
+        return res.status(200).json({
+          status: 'success',
+          rides: result.rows,
+        });
+      })
+      .catch((error) => {
+        return res.status(500).json({
+          status: 'error',
+          message: error,
+        });
+      });
   }
 
   /**
