@@ -14,10 +14,6 @@ router.use(auth.authenticateUser);
 router.get('/rides', Ride.getAllRideOffers);
 router.get('/rides/:id', Ride.getRideOffer);
 router.post('/users/rides', validate.rideOfferValidator, Ride.createRideOffer);
-router.post(
-  '/rides/:rideId/requests',
-  validate.rideRequestValidator,
-  RideRequest.createRequest,
-);
+router.post('/rides/:rideId/requests', RideRequest.createRequest);
 
 export default router;

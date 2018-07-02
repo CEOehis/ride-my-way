@@ -77,30 +77,6 @@ export default class validate {
     next();
   }
 
-  static rideRequestValidator(req, res, next) {
-    const errors = {};
-
-    const { userId } = req.body;
-
-    if (!userId) {
-      errors.userId = 'User id cannot be empty';
-    }
-
-    if (userId) {
-      const regex = /^\d+$/i;
-      if (!regex.test(userId)) {
-        errors.userId = 'userId should be a number';
-      }
-    }
-
-    if (userId && Number.isNaN(parseInt(userId, 10))) {
-      errors.userId = 'userId should be a number';
-    }
-
-    req.body.validationErrors = errors;
-    next();
-  }
-
   static userSigninValidator(req, res, next) {
     const errors = {};
 

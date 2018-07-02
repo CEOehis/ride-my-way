@@ -1,6 +1,4 @@
-import isEmpty from 'lodash/isEmpty';
-import { RideOffers } from '../dataStore/RideOffers';
-import { RideRequests } from '../dataStore/RideRequests';
+import pool from '../models/db';
 
 /**
  * controller class to handle REST routes for ride requests
@@ -19,40 +17,46 @@ export default class RideRequest {
    * @memberof RideRequest
    */
   static createRequest(req, res) {
-    // check for validation errors
-    const errors = req.body.validationErrors;
-    if (!isEmpty(errors)) {
-      return res.status(400).json({ errors });
-    }
     const rideId = parseInt(req.params.rideId, 10);
-    // rather than loop through entire ride offer collection
-    // get their id's and use Array.prototype.includes() to
-    // check if rideId exists in collection
-    const allRideOffersIds = RideOffers.map((rideOffer) => {
-      return rideOffer.id;
-    });
-    if (!allRideOffersIds.includes(rideId)) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'The requested ride offer does not exist',
+    const { userId } = req;
+    pool
+      .query('SELECT * FROM rides WHERE id = $1', [rideId])
+      .then((result) => {
+        if (!result.rowCount) {
+          return res.status(404).json({
+            status: 'error',
+            message: 'The requested ride offer does not exist',
+          });
+        }
+        if (+result.rows[0].userid === +userId) {
+          return res.status(400).json({
+            status: 'error',
+            message: 'You can not request for a ride you offered',
+          });
+        }
+        return pool
+          .query('INSERT INTO requests (userid, rideid) values ($1, $2)', [
+            userId,
+            rideId,
+          ])
+          .then(() => {
+            return res.status(201).json({
+              status: 'success',
+              message: 'request to join ride successful',
+            });
+          })
+          .catch((error) => {
+            return res.status(500).json({
+              status: 'error',
+              message: error,
+            });
+          });
+      })
+      .catch((error) => {
+        return res.status(500).json({
+          status: 'error',
+          message: error,
+        });
       });
-    }
-    const { userId } = req.body;
-    // coerce both values to numbers, then compare with strice equality
-    if (+RideOffers[rideId - 1].userId === +userId) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'You can not request for a ride you offered',
-      });
-    }
-    RideRequests.push({
-      id: RideRequest.length + 1,
-      ride: rideId,
-      userId,
-    });
-    return res.status(201).json({
-      status: 'success',
-      message: 'request to join ride successful',
-    });
   }
 }

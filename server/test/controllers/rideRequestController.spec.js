@@ -2,29 +2,43 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app, { server } from '../../index';
-import { RideOffers } from '../../dataStore/RideOffers';
 import Token from '../../utils/Token';
+import pool from '../../models/db';
 
-const token = `Bearer ${Token.generateToken(1)}`;
+const token = `Bearer ${Token.generateToken(3)}`;
 
 chai.use(chaiHttp);
 
 describe('RIDE REQUEST CONTROLLER API', function () {
   // empty out ride offers collection, then add one entry
-  const rideOffer = {
-    id: 1,
-    from: 'Reichelchester',
-    to: 'Port Liliane',
-    seats: 2,
-    userId: 5,
-    pricePerSeat: 311,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+  before(function (done) {
+    pool
+      .query(
+        'INSERT INTO users (fullname, email, password) VALUES ($1, $2, $3)',
+        ['Femi Kuti', 'femi.kuti@mail.com', 'passywordy'],
+      )
+      .then(() => {
+        done();
+      });
+  });
 
-  before(function () {
-    RideOffers.length = 0;
-    RideOffers.push(rideOffer);
+  before(function (done) {
+    pool
+      .query(
+        'INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)',
+        ['lagos', 'ibadan', '2018-07-02', '15:30', 5, 1],
+      )
+      .then(() => {
+        done();
+      });
+  });
+
+  before(function (done) {
+    pool
+      .query('INSERT INTO requests(userid, rideid) values (3, 1)')
+      .then(() => {
+        done();
+      });
   });
 
   after(function (done) {
@@ -39,9 +53,6 @@ describe('RIDE REQUEST CONTROLLER API', function () {
           .request(app)
           .post('/api/v1/rides/1/requests')
           .set('Authorization', token)
-          .send({
-            userId: 3,
-          })
           .end((err, res) => {
             expect(err).to.not.exist;
             expect(res.status).to.equal(201);
@@ -58,9 +69,6 @@ describe('RIDE REQUEST CONTROLLER API', function () {
           .request(app)
           .post('/api/v1/rides/500/requests')
           .set('Authorization', token)
-          .send({
-            userId: 3,
-          })
           .end((err, res) => {
             expect(err).to.not.exist;
             expect(res.status).to.equal(404);
@@ -73,13 +81,11 @@ describe('RIDE REQUEST CONTROLLER API', function () {
       });
 
       it('should not create a request to a ride offer created by the same user', function (done) {
+        const sameUserToken = `Bearer ${Token.generateToken(1)}`;
         chai
           .request(app)
           .post('/api/v1/rides/1/requests')
-          .set('Authorization', token)
-          .send({
-            userId: 5,
-          })
+          .set('Authorization', sameUserToken)
           .end((err, res) => {
             expect(err).to.not.exist;
             expect(res.status).to.equal(400);
@@ -87,24 +93,6 @@ describe('RIDE REQUEST CONTROLLER API', function () {
             expect(res.body.message).to.equal(
               'You can not request for a ride you offered',
             );
-            done();
-          });
-      });
-    });
-
-    describe('when passed invalid userId', function () {
-      it('should not create a new ride offer request', function (done) {
-        chai
-          .request(app)
-          .post('/api/v1/rides/1/requests')
-          .set('Authorization', token)
-          .send({
-            userId: '',
-          })
-          .end((err, res) => {
-            expect(err).to.not.exist;
-            expect(res.status).to.equal(400);
-            expect(Object.keys(res.body.errors).length).to.be.above(0);
             done();
           });
       });
