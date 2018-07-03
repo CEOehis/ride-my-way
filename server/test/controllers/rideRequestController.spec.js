@@ -19,6 +19,9 @@ describe('RIDE REQUEST CONTROLLER API', function () {
       )
       .then(() => {
         done();
+      })
+      .catch(() => {
+        done();
       });
   });
 
@@ -29,6 +32,9 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         ['lagos', 'ibadan', '2018-07-02', '15:30', 5, 1],
       )
       .then(() => {
+        done();
+      })
+      .catch(() => {
         done();
       });
   });
@@ -96,6 +102,38 @@ describe('RIDE REQUEST CONTROLLER API', function () {
             done();
           });
       });
+    });
+  });
+
+  describe('GET all ride offer requests route handler', function () {
+    it('should return all requests for a ride offer', function (done) {
+      const rideCreatorToken = `Bearer ${Token.generateToken(1)}`;
+      chai
+        .request(app)
+        .get('/api/v1/users/rides/1/requests')
+        .set('Authorization', rideCreatorToken)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(200);
+          expect(res.body.status).to.equal('success');
+          expect(res.body.requests).to.be.an('array');
+          done();
+        });
+    });
+
+    it('should return appropriate message if no requests exist', function (done) {
+      const rideCreatorToken = `Bearer ${Token.generateToken(1)}`;
+      chai
+        .request(app)
+        .get('/api/v1/users/rides/2/requests')
+        .set('Authorization', rideCreatorToken)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(404);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.message).to.equal('No ride requests found for this ride offer');
+          done();
+        });
     });
   });
 });
