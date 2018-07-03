@@ -136,4 +136,57 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         });
     });
   });
+
+  describe('PUT ride offer requests route handler', function () {
+    it('should not allow a user respond to another users ride requests', function (done) {
+      const otherUserToken = `Bearer ${Token.generateToken(3)}`;
+      chai
+        .request(app)
+        .put('/api/v1/users/rides/1/requests/2')
+        .set('Authorization', otherUserToken)
+        .send({
+          status: 'accepted',
+        })
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(400);
+          expect(res.body.message).to.equal('You are not allowed to respond to another users ride requests');
+          done();
+        });
+    });
+
+    it('should update the status of a request', function (done) {
+      const userToken = `Bearer ${Token.generateToken(1)}`;
+      chai
+        .request(app)
+        .put('/api/v1/users/rides/1/requests/2')
+        .set('Authorization', userToken)
+        .send({
+          status: 'accepted',
+        })
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(200);
+          expect(res.body.message).to.equal('Successfully accepted ride request');
+          done();
+        });
+    });
+
+    it('should respond with appropriate message if requested ride does not exist', function (done) {
+      const userToken = `Bearer ${Token.generateToken(1)}`;
+      chai
+        .request(app)
+        .put('/api/v1/users/rides/30/requests/2')
+        .set('Authorization', userToken)
+        .send({
+          status: 'accepted',
+        })
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(404);
+          expect(res.body.message).to.equal('The requested ride was not found');
+          done();
+        });
+    });
+  });
 });
