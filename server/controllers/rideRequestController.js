@@ -97,15 +97,17 @@ export default class RideRequest {
    * @memberof RideRequest
    */
   static respondToRequests(req, res) {
-    const { status } = req.body;
-    const { requestId, rideId } = req.params;
-    const { userId } = req;
+    const { body, params, userId } = req;
+    const { status } = body;
+    const { requestId, rideId } = params;
     // check if the user is the one who created the ride offer
     pool
       .query('SELECT * FROM rides WHERE id = $1', [rideId])
       .then((result) => {
-        if (result.rowCount) {
-          if (result.rows[0].userid !== userId) {
+        if (result.rowCount !== 0) {
+          const rides = result.rows[0];
+          const { userid } = rides;
+          if (userid !== userId) {
             return res.status(400).json({
               status: 'error',
               message: 'You are not allowed to respond to another users ride requests',
@@ -137,11 +139,11 @@ export default class RideRequest {
           message: 'The requested ride was not found',
         });
       })
-      .catch((error) => {
+      .catch(() => {
         // could not retrieve ride
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'Unable to fetch original ride offer',
         });
       });
   }

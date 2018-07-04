@@ -142,7 +142,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
       const otherUserToken = `Bearer ${Token.generateToken(3)}`;
       chai
         .request(app)
-        .put('/api/v1/users/rides/1/requests/2')
+        .put('/api/v1/rides/1/requests/2')
         .set('Authorization', otherUserToken)
         .send({
           status: 'accepted',
@@ -159,7 +159,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
       const userToken = `Bearer ${Token.generateToken(1)}`;
       chai
         .request(app)
-        .put('/api/v1/users/rides/1/requests/2')
+        .put('/api/v1/rides/1/requests/2')
         .set('Authorization', userToken)
         .send({
           status: 'accepted',
@@ -176,7 +176,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
       const userToken = `Bearer ${Token.generateToken(1)}`;
       chai
         .request(app)
-        .put('/api/v1/users/rides/30/requests/2')
+        .put('/api/v1/rides/30/requests/2')
         .set('Authorization', userToken)
         .send({
           status: 'accepted',
