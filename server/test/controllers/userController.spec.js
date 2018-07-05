@@ -1,10 +1,11 @@
-import chai, { expect } from 'chai';
+import chai, { expect, request } from 'chai';
 import chaiHttp from 'chai-http';
 
 import pool from '../../models/db';
 import app, { server } from '../../index';
 
 chai.use(chaiHttp);
+const baseUrl = '/api/v1/auth';
 
 describe('USER CONTROLLER API', function () {
   // empty users table
@@ -26,16 +27,15 @@ describe('USER CONTROLLER API', function () {
 
   describe('SIGN UP route handler', function () {
     describe('when passed valid data', function () {
+      const userData = {
+        fullName: 'John Doe',
+        email: 'jdtesting@mail.com',
+        password: 'passywordy',
+        passwordConfirm: 'passywordy',
+      };
       it('should create a new user and respond with jwt', function (done) {
-        const userData = {
-          fullName: 'John Doe',
-          email: 'jdtesting@mail.com',
-          password: 'passywordy',
-          passwordConfirm: 'passywordy',
-        };
-        chai
-          .request(app)
-          .post('/api/v1/auth/signup')
+        request(app)
+          .post(`${baseUrl}/signup`)
           .send(userData)
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -43,6 +43,19 @@ describe('USER CONTROLLER API', function () {
             expect(res.type).to.equal('application/json');
             expect(res.body.status).to.equal('success');
             expect(res.body.token).to.be.a('string');
+            done();
+          });
+      });
+
+      it('should not create a new user with an existing email', function (done) {
+        request(app)
+          .post(`${baseUrl}/signup`)
+          .send(userData)
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(409);
+            expect(res.body.status).to.equal('error');
+            expect(res.body.message).to.equal('User with this email already exists');
             done();
           });
       });
@@ -55,9 +68,8 @@ describe('USER CONTROLLER API', function () {
           email: 'invalidmail',
           password: 'passywordy',
         };
-        chai
-          .request(app)
-          .post('/api/v1/auth/signup')
+        request(app)
+          .post(`${baseUrl}/signup`)
           .send(userData)
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -77,9 +89,8 @@ describe('USER CONTROLLER API', function () {
           email: 'jdtesting@mail.com',
           password: 'passywordy',
         };
-        chai
-          .request(app)
-          .post('/api/v1/auth/login')
+        request(app)
+          .post(`${baseUrl}/login`)
           .send(userData)
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -98,9 +109,8 @@ describe('USER CONTROLLER API', function () {
           email: 'jdtesting',
           password: 'passywordy',
         };
-        chai
-          .request(app)
-          .post('/api/v1/auth/login')
+        request(app)
+          .post(`${baseUrl}/login`)
           .send(userData)
           .end((err, res) => {
             expect(err).to.not.exist;

@@ -26,28 +26,39 @@ export default class User {
       return res.status(400).json({ errors });
     }
     const { fullName, email, password } = req.body;
+    // check within database to see if user exists
     return pool
-      .query(
-        'INSERT INTO users(fullname, email, password, created_at) values($1, $2, $3, NOW())',
-        [fullName, email, bcrypt.hashSync(password, 10)],
-      )
-      .then(() => {
-        pool
-          .query('SELECT * FROM users WHERE email=$1', [email])
-          .then((result) => {
-            // create token
-            const token = Token.generateToken(result.rows[0].id);
-            return res.status(201).json({
-              status: 'success',
-              token,
+      .query('SELECT email FROM users WHERE email=$1', [email])
+      .then((selectResult) => {
+        if (selectResult.rowCount !== 0) {
+          return res.status(409).json({
+            status: 'error',
+            message: 'User with this email already exists',
+          });
+        }
+        return pool
+          .query(
+            'INSERT INTO users(fullname, email, password, created_at) values($1, $2, $3, NOW())',
+            [fullName, email, bcrypt.hashSync(password, 10)],
+          )
+          .then(() => {
+            pool
+              .query('SELECT * FROM users WHERE email=$1', [email])
+              .then((result) => {
+                // create token
+                const token = Token.generateToken(result.rows[0].id);
+                return res.status(201).json({
+                  status: 'success',
+                  token,
+                });
+              });
+          })
+          .catch(() => {
+            return res.status(500).json({
+              status: 'error',
+              message: 'Unable to create user',
             });
           });
-      })
-      .catch(() => {
-        return res.status(500).json({
-          status: 'error',
-          message: 'Unable to create user',
-        });
       });
   }
 
