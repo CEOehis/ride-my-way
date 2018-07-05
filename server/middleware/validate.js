@@ -87,7 +87,7 @@ export default class validate {
       errors.email = 'email is required';
     }
     if (email) {
-      const emailRegex = /^(\S)+@{1}(\S)+.(\S)+$/;
+      const emailRegex = /^\S+@{1}\S+\.\S+$/;
       if (!emailRegex.test(email)) {
         errors.email = 'email address supplied is not valid';
       }
@@ -112,7 +112,7 @@ export default class validate {
       errors.email = 'email is required';
     }
     if (email) {
-      const emailRegex = /^(\S)+@{1}(\S)+.(\S)+$/;
+      const emailRegex = /^\S+@{1}\S+\.\S+$/;
       if (!emailRegex.test(email)) {
         errors.email = 'email address supplied is not valid';
       }
