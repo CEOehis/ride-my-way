@@ -2,7 +2,6 @@ import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app, { server } from '../../index';
-import { RideOffers } from '../../dataStore/RideOffers';
 import Token from '../../utils/Token';
 import pool from '../../models/db';
 
@@ -134,13 +133,10 @@ describe('RIDE CONTROLLER API', function () {
           .post('/api/v1/users/rides')
           .set('Authorization', token)
           .send({
-            id: RideOffers.length + 1,
             from: '   ',
             to: 'East Brianbury',
             userId: 1,
             pricePerSeat: 241,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
           })
           .end((err, res) => {
             expect(err).to.not.exist;

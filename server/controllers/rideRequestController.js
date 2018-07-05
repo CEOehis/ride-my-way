@@ -45,17 +45,17 @@ export default class RideRequest {
               message: 'request to join ride successful',
             });
           })
-          .catch((error) => {
+          .catch(() => {
             return res.status(500).json({
               status: 'error',
-              message: error,
+              message: 'Unable to create request',
             });
           });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'Unable to fetch ride details',
         });
       });
   }

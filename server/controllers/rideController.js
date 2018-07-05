@@ -26,10 +26,10 @@ export default class Ride {
           rides: result.rows,
         });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'Unable to fetch rides',
         });
       });
   }
@@ -61,10 +61,10 @@ export default class Ride {
           message: 'resource not found',
         });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'Unable to fetch requested resource',
         });
       });
   }
@@ -102,17 +102,17 @@ export default class Ride {
               ride: result.rows[0],
             });
           })
-          .catch((error) => {
+          .catch(() => {
             return res.status(500).json({
               status: 'error',
-              message: error,
+              message: 'Unable to complete request',
             });
           });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'Unable to create ride offer',
         });
       });
   }

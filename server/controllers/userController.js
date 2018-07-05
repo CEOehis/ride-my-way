@@ -43,10 +43,10 @@ export default class User {
             });
           });
       })
-      .catch((e) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          error: e,
+          message: 'Unable to create user',
         });
       });
   }
@@ -74,7 +74,7 @@ export default class User {
         if (!user) {
           return res.status(404).json({
             status: 'error',
-            message: 'User does not exist',
+            message: 'Invalid email or password',
           });
         }
         // user exists so check if password supplied matches
@@ -90,20 +90,20 @@ export default class User {
             }
             return res.status(401).json({
               status: 'error',
-              message: 'wrong password',
+              message: 'Invalid email or password',
             });
           })
-          .catch((error) => {
+          .catch(() => {
             return res.status(500).json({
               status: 'success',
-              message: error,
+              message: 'Unable to verify user',
             });
           });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'Unable to locate resource',
         });
       });
   }
