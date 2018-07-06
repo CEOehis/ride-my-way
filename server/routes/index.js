@@ -10,7 +10,8 @@ router.post('/auth/signup', validate.userSignupValidator, User.signup);
 router.post('/auth/login', validate.userSigninValidator, User.signin);
 
 // protected routes
-router.use(auth.authenticateUser);
+router.use('/rides', auth.authenticateUser);
+router.use('/users', auth.authenticateUser);
 router.get('/rides', Ride.getAllRideOffers);
 router.get('/rides/:id', Ride.getRideOffer);
 router.get('/users/rides/:rideId/requests', RideRequest.getRideRequests);
