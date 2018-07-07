@@ -1,4 +1,4 @@
-import chai, { expect } from 'chai';
+import chai, { expect, request } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app, { server } from '../../index';
@@ -6,6 +6,7 @@ import Token from '../../utils/Token';
 import pool from '../../models/db';
 
 const token = `Bearer ${Token.generateToken(3)}`;
+const baseUrl = '/api/v1/rides';
 
 chai.use(chaiHttp);
 
@@ -55,9 +56,8 @@ describe('RIDE REQUEST CONTROLLER API', function () {
   describe('POST ride offer request route handler', function () {
     describe('when passed valid data', function () {
       it('should create a new request to an existing ride offer', function (done) {
-        chai
-          .request(app)
-          .post('/api/v1/rides/1/requests')
+        request(app)
+          .post(`${baseUrl}/1/requests`)
           .set('Authorization', token)
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -71,9 +71,8 @@ describe('RIDE REQUEST CONTROLLER API', function () {
       });
 
       it('should not create a request for a non-existing ride offer', function (done) {
-        chai
-          .request(app)
-          .post('/api/v1/rides/500/requests')
+        request(app)
+          .post(`${baseUrl}/500/requests`)
           .set('Authorization', token)
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -88,9 +87,8 @@ describe('RIDE REQUEST CONTROLLER API', function () {
 
       it('should not create a request to a ride offer created by the same user', function (done) {
         const sameUserToken = `Bearer ${Token.generateToken(1)}`;
-        chai
-          .request(app)
-          .post('/api/v1/rides/1/requests')
+        request(app)
+          .post(`${baseUrl}/1/requests`)
           .set('Authorization', sameUserToken)
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -108,9 +106,8 @@ describe('RIDE REQUEST CONTROLLER API', function () {
   describe('GET all ride offer requests route handler', function () {
     it('should return all requests for a ride offer', function (done) {
       const rideCreatorToken = `Bearer ${Token.generateToken(1)}`;
-      chai
-        .request(app)
-        .get('/api/v1/users/rides/1/requests')
+      request(app)
+        .get(`${baseUrl}/1/requests`)
         .set('Authorization', rideCreatorToken)
         .end((err, res) => {
           expect(err).to.not.exist;
@@ -123,9 +120,8 @@ describe('RIDE REQUEST CONTROLLER API', function () {
 
     it('should return appropriate message if no requests exist', function (done) {
       const rideCreatorToken = `Bearer ${Token.generateToken(1)}`;
-      chai
-        .request(app)
-        .get('/api/v1/users/rides/2/requests')
+      request(app)
+        .get(`${baseUrl}/2/requests`)
         .set('Authorization', rideCreatorToken)
         .end((err, res) => {
           expect(err).to.not.exist;
@@ -140,9 +136,8 @@ describe('RIDE REQUEST CONTROLLER API', function () {
   describe('PUT ride offer requests route handler', function () {
     it('should not allow a user respond to another users ride requests', function (done) {
       const otherUserToken = `Bearer ${Token.generateToken(3)}`;
-      chai
-        .request(app)
-        .put('/api/v1/rides/1/requests/2')
+      request(app)
+        .put(`${baseUrl}/1/requests/2`)
         .set('Authorization', otherUserToken)
         .send({
           status: 'accepted',
@@ -157,9 +152,8 @@ describe('RIDE REQUEST CONTROLLER API', function () {
 
     it('should update the status of a request', function (done) {
       const userToken = `Bearer ${Token.generateToken(1)}`;
-      chai
-        .request(app)
-        .put('/api/v1/rides/1/requests/2')
+      request(app)
+        .put(`${baseUrl}/1/requests/2`)
         .set('Authorization', userToken)
         .send({
           status: 'accepted',
@@ -174,9 +168,8 @@ describe('RIDE REQUEST CONTROLLER API', function () {
 
     it('should respond with appropriate message if requested ride does not exist', function (done) {
       const userToken = `Bearer ${Token.generateToken(1)}`;
-      chai
-        .request(app)
-        .put('/api/v1/rides/30/requests/2')
+      request(app)
+        .put(`${baseUrl}/30/requests/2`)
         .set('Authorization', userToken)
         .send({
           status: 'accepted',

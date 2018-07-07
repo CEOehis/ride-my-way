@@ -6,16 +6,15 @@ import auth from '../middleware/auth';
 const router = express.Router();
 
 // authorisation
-router.post('/auth/signup', validate.userSignupValidator, User.signup);
-router.post('/auth/login', validate.userSigninValidator, User.signin);
+router.post('/users/signup', validate.userSignupValidator, User.signup);
+router.post('/users/login', validate.userSigninValidator, User.signin);
 
 // protected routes
 router.use('/rides', auth.authenticateUser);
-router.use('/users', auth.authenticateUser);
 router.get('/rides', Ride.getAllRideOffers);
 router.get('/rides/:id', Ride.getRideOffer);
-router.get('/users/rides/:rideId/requests', RideRequest.getRideRequests);
-router.post('/users/rides', validate.rideOfferValidator, Ride.createRideOffer);
+router.get('/rides/:rideId/requests', RideRequest.getRideRequests);
+router.post('/rides', validate.rideOfferValidator, Ride.createRideOffer);
 router.post('/rides/:rideId/requests', RideRequest.createRequest);
 router.put('/rides/:rideId/requests/:requestId', RideRequest.respondToRequests);
 

@@ -5,7 +5,7 @@ import pool from '../../models/db';
 import app, { server } from '../../index';
 
 chai.use(chaiHttp);
-const baseUrl = '/api/v1/auth';
+const baseUrl = '/api/v1/users';
 
 describe('USER CONTROLLER API', function () {
   // empty users table

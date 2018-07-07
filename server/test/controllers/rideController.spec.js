@@ -1,4 +1,4 @@
-import chai, { expect } from 'chai';
+import chai, { expect, request } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app, { server } from '../../index';
@@ -6,6 +6,7 @@ import Token from '../../utils/Token';
 import pool from '../../models/db';
 
 const token = `Bearer ${Token.generateToken(1)}`;
+const baseUrl = '/api/v1/rides';
 
 chai.use(chaiHttp);
 
@@ -47,9 +48,8 @@ describe('RIDE CONTROLLER API', function () {
 
   describe('GET all ride offers route handler', function () {
     it('should respond with an array of all ride offers', function (done) {
-      chai
-        .request(app)
-        .get('/api/v1/rides')
+      request(app)
+        .get(baseUrl)
         .set('Authorization', token)
         .end((err, res) => {
           expect(err).to.not.exist;
@@ -66,9 +66,8 @@ describe('RIDE CONTROLLER API', function () {
     it('should respond with a single ride offer', function (done) {
       pool.query('SELECT * FROM rides LIMIT 1').then((result) => {
         const rideId = result.rows[0].id;
-        chai
-          .request(app)
-          .get(`/api/v1/rides/${rideId}`)
+        request(app)
+          .get(`${baseUrl}/${rideId}`)
           .set('Authorization', token)
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -82,9 +81,8 @@ describe('RIDE CONTROLLER API', function () {
     });
 
     it('should respond with a "404" message if resource does not exits', function (done) {
-      chai
-        .request(app)
-        .get('/api/v1/rides/30')
+      request(app)
+        .get(`${baseUrl}/30`)
         .set('Authorization', token)
         .end((err, res) => {
           expect(res.status).to.equal(404);
@@ -98,9 +96,8 @@ describe('RIDE CONTROLLER API', function () {
   describe('POST ride offer route handler', function () {
     describe('when passed valid data', function () {
       it('should respond with success message along with created ride offer resource', function (done) {
-        chai
-          .request(app)
-          .post('/api/v1/users/rides')
+        request(app)
+          .post(baseUrl)
           .set('Authorization', token)
           .send({
             origin: 'Lake Tobinport',
@@ -128,9 +125,8 @@ describe('RIDE CONTROLLER API', function () {
 
     describe('when passed invalid data', function () {
       it('should not create a new ride offer', function (done) {
-        chai
-          .request(app)
-          .post('/api/v1/users/rides')
+        request(app)
+          .post(baseUrl)
           .set('Authorization', token)
           .send({
             from: '   ',
