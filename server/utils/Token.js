@@ -14,7 +14,7 @@ class Token {
    */
   static generateToken(id) {
     const token = jwt.sign({ id }, process.env.SECRET, {
-      expiresIn: 86400,
+      expiresIn: '4h',
     });
     return token;
   }
@@ -28,13 +28,14 @@ class Token {
    * @memberof Token
    */
   static decodeToken(token) {
-    const userId = jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    return jwt.verify(token, process.env.SECRET, (err, decoded) => {
       if (err) {
-        return false;
+        const error = new Error(err);
+        error.status = 401;
+        return error;
       }
-      return decoded.id;
+      return decoded;
     });
-    return userId;
   }
 }
 

@@ -50,17 +50,17 @@ describe('Token helper utility', function () {
   });
 
   describe('decodeToken method', function () {
-    it('should take a token and return a userId', function (done) {
-      const id = Token.decodeToken(token);
-      expect(id).to.equal(user.id);
+    it('should take a token and return it decoded', function (done) {
+      const decoded = Token.decodeToken(token);
+      expect(decoded.id).to.equal(user.id);
       done();
     });
   });
 
   describe('decodeToken method', function () {
-    it('should return false if invalid token supplied', function (done) {
-      const id = Token.decodeToken('invalid token ;)');
-      expect(id).to.equal(false);
+    it('should return error object if invalid token supplied', function (done) {
+      const decoded = Token.decodeToken('invalid token ;)');
+      expect(decoded).to.be.an('error');
       done();
     });
   });

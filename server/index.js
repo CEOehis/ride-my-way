@@ -45,11 +45,11 @@ app.use(
 
 // error handler
 /* eslint-disable-next-line no-unused-vars */
-app.use((err, req, res, next) => {
-  res.status(err.status || 500);
+app.use(({ status, message }, req, res, next) => {
+  res.status(status || 500);
   res.json({
     status: 'error',
-    message: err.message,
+    message,
   });
 });
 

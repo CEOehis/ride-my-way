@@ -33,15 +33,12 @@ export default class auth {
       });
     }
     const token = authorization.split(' ')[1];
-    const userId = Token.decodeToken(token);
-    if (!userId) {
-      return res.status(401).json({
-        status: 'error',
-        message: 'invalid token',
-      });
+    const decoded = Token.decodeToken(token);
+    if (typeof decoded.id === 'undefined') {
+      return next(decoded);
     }
     // set user in request object for future use
-    req.userId = userId;
+    req.userId = decoded.id;
     // user authorised to access resource
     return next();
   }
