@@ -127,7 +127,9 @@ describe('RIDE REQUEST CONTROLLER API', function () {
           expect(err).to.not.exist;
           expect(res.status).to.equal(404);
           expect(res.body.status).to.equal('error');
-          expect(res.body.message).to.equal('No ride requests found for this ride offer');
+          expect(res.body.message).to.equal(
+            'No ride requests found for this ride offer',
+          );
           done();
         });
     });
@@ -145,7 +147,9 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(400);
-          expect(res.body.message).to.equal('You are not allowed to respond to another users ride requests');
+          expect(res.body.message).to.equal(
+            'You are not allowed to respond to another users ride requests',
+          );
           done();
         });
     });
@@ -161,7 +165,9 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(200);
-          expect(res.body.message).to.equal('Successfully accepted ride request');
+          expect(res.body.message).to.equal(
+            'Successfully accepted ride request',
+          );
           done();
         });
     });

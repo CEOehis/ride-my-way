@@ -21,7 +21,7 @@ export default class User {
    */
   static signup(req, res) {
     // check for validation errors
-    const errors = req.body.validationErrors;
+    const errors = req.validationErrors;
     if (!isEmpty(errors)) {
       return res.status(400).json({ errors });
     }
@@ -73,7 +73,7 @@ export default class User {
    */
   static signin(req, res) {
     // check for validation errors
-    const errors = req.body.validationErrors;
+    const errors = req.validationErrors;
     if (!isEmpty(errors)) {
       return res.status(400).json({ errors });
     }

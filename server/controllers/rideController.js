@@ -81,7 +81,7 @@ export default class Ride {
   /* eslint-disable-next-line consistent-return */
   static createRideOffer(req, res) {
     // check for validation errors
-    const errors = req.body.validationErrors;
+    const errors = req.validationErrors;
     if (!isEmpty(errors)) {
       return res.status(400).json({ errors });
     }

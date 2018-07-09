@@ -26,24 +26,24 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.origin = '';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.origin).to.exist;
-        expect(req.body.validationErrors.origin).to.equal(
+        expect(req.validationErrors.origin).to.exist;
+        expect(req.validationErrors.origin).to.equal(
           'Ride offer origin is required',
         );
       });
       it('should check if it is less than two characters long', function () {
         req.body.origin = 'a';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.origin).to.exist;
-        expect(req.body.validationErrors.origin).to.equal(
+        expect(req.validationErrors.origin).to.exist;
+        expect(req.validationErrors.origin).to.equal(
           'Ride offer origin must be 2 characters or more',
         );
       });
       it('should check if it is alphanumeric', function () {
         req.body.origin = '$%@#';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.origin).to.exist;
-        expect(req.body.validationErrors.origin).to.equal(
+        expect(req.validationErrors.origin).to.exist;
+        expect(req.validationErrors.origin).to.equal(
           'Ride offer origin should be alphanumeric',
         );
       });
@@ -53,24 +53,24 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.destination = '';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.destination).to.exist;
-        expect(req.body.validationErrors.destination).to.equal(
+        expect(req.validationErrors.destination).to.exist;
+        expect(req.validationErrors.destination).to.equal(
           'Ride offer destination is required',
         );
       });
       it('should check if it is less than two characters long', function () {
         req.body.destination = 'a';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.destination).to.exist;
-        expect(req.body.validationErrors.destination).to.equal(
+        expect(req.validationErrors.destination).to.exist;
+        expect(req.validationErrors.destination).to.equal(
           'Ride offer destination must be 2 characters or more',
         );
       });
       it('should check if it is alphanumeric', function () {
         req.body.destination = '$%@#';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.destination).to.exist;
-        expect(req.body.validationErrors.destination).to.equal(
+        expect(req.validationErrors.destination).to.exist;
+        expect(req.validationErrors.destination).to.equal(
           'Ride offer destination should be alphanumeric',
         );
       });
@@ -80,16 +80,16 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.seats = '';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.seats).to.exist;
-        expect(req.body.validationErrors.seats).to.equal(
+        expect(req.validationErrors.seats).to.exist;
+        expect(req.validationErrors.seats).to.equal(
           'Specify number of available seats',
         );
       });
       it('should check if a number was supplied', function () {
         req.body.seats = 'this is just wrong';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.seats).to.exist;
-        expect(req.body.validationErrors.seats).to.equal(
+        expect(req.validationErrors.seats).to.exist;
+        expect(req.validationErrors.seats).to.equal(
           'Available seats should be a number',
         );
       });
@@ -99,16 +99,14 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.date = '';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.date).to.exist;
-        expect(req.body.validationErrors.date).to.equal(
-          'specify ride offer date',
-        );
+        expect(req.validationErrors.date).to.exist;
+        expect(req.validationErrors.date).to.equal('specify ride offer date');
       });
       it('should check if a valid format was supplied', function () {
         req.body.date = 'this is just wrong';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.date).to.exist;
-        expect(req.body.validationErrors.date).to.equal('Invalid date format');
+        expect(req.validationErrors.date).to.exist;
+        expect(req.validationErrors.date).to.equal('Invalid date format');
       });
     });
 
@@ -116,22 +114,20 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.time = '';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.time).to.exist;
-        expect(req.body.validationErrors.time).to.equal(
-          'Specify take off time',
-        );
+        expect(req.validationErrors.time).to.exist;
+        expect(req.validationErrors.time).to.equal('Specify take off time');
       });
       it('should check if a valid format was supplied', function () {
         req.body.time = 'this is just wrong';
         validate.rideOfferValidator(req, res, next);
-        expect(req.body.validationErrors.time).to.exist;
-        expect(req.body.validationErrors.time).to.equal('Invalid time format');
+        expect(req.validationErrors.time).to.exist;
+        expect(req.validationErrors.time).to.equal('Invalid time format');
       });
     });
 
     it('should add an `validationErrors` object to the request body', function (done) {
       validate.rideOfferValidator(req, res, next);
-      expect(req.body.validationErrors).to.exist;
+      expect(req.validationErrors).to.exist;
       done();
     });
 
@@ -148,14 +144,14 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.email = '';
         validate.userSigninValidator(req, res, next);
-        expect(req.body.validationErrors.email).to.exist;
-        expect(req.body.validationErrors.email).to.equal('email is required');
+        expect(req.validationErrors.email).to.exist;
+        expect(req.validationErrors.email).to.equal('email is required');
       });
       it('should check if it is an email', function () {
         req.body.email = 'someinvalidmail';
         validate.userSigninValidator(req, res, next);
-        expect(req.body.validationErrors.email).to.exist;
-        expect(req.body.validationErrors.email).to.equal(
+        expect(req.validationErrors.email).to.exist;
+        expect(req.validationErrors.email).to.equal(
           'email address supplied is not valid',
         );
       });
@@ -165,16 +161,14 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.password = '';
         validate.userSigninValidator(req, res, next);
-        expect(req.body.validationErrors.password).to.exist;
-        expect(req.body.validationErrors.password).to.equal(
-          'password is required',
-        );
+        expect(req.validationErrors.password).to.exist;
+        expect(req.validationErrors.password).to.equal('password is required');
       });
       it('should check if it less than 6 characters long', function () {
         req.body.password = 'pwd';
         validate.userSigninValidator(req, res, next);
-        expect(req.body.validationErrors.password).to.exist;
-        expect(req.body.validationErrors.password).to.equal(
+        expect(req.validationErrors.password).to.exist;
+        expect(req.validationErrors.password).to.equal(
           'password supplied is too short',
         );
       });
@@ -186,16 +180,14 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.fullName = '';
         validate.userSignupValidator(req, res, next);
-        expect(req.body.validationErrors.fullName).to.exist;
-        expect(req.body.validationErrors.fullName).to.equal(
-          'fullName is required',
-        );
+        expect(req.validationErrors.fullName).to.exist;
+        expect(req.validationErrors.fullName).to.equal('fullName is required');
       });
       it('should check if it is less than 2 characters', function () {
         req.body.fullName = 'a';
         validate.userSignupValidator(req, res, next);
-        expect(req.body.validationErrors.fullName).to.exist;
-        expect(req.body.validationErrors.fullName).to.equal(
+        expect(req.validationErrors.fullName).to.exist;
+        expect(req.validationErrors.fullName).to.equal(
           'fullName supplied is too short',
         );
       });
@@ -205,14 +197,14 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.email = '';
         validate.userSignupValidator(req, res, next);
-        expect(req.body.validationErrors.email).to.exist;
-        expect(req.body.validationErrors.email).to.equal('email is required');
+        expect(req.validationErrors.email).to.exist;
+        expect(req.validationErrors.email).to.equal('email is required');
       });
       it('should check if it is an email', function () {
         req.body.email = 'someinvalidmail';
         validate.userSignupValidator(req, res, next);
-        expect(req.body.validationErrors.email).to.exist;
-        expect(req.body.validationErrors.email).to.equal(
+        expect(req.validationErrors.email).to.exist;
+        expect(req.validationErrors.email).to.equal(
           'email address supplied is not valid',
         );
       });
@@ -222,16 +214,14 @@ describe('Validate middleware', function () {
       it('should check if it is empty', function () {
         req.body.password = '';
         validate.userSignupValidator(req, res, next);
-        expect(req.body.validationErrors.password).to.exist;
-        expect(req.body.validationErrors.password).to.equal(
-          'password is required',
-        );
+        expect(req.validationErrors.password).to.exist;
+        expect(req.validationErrors.password).to.equal('password is required');
       });
       it('should check if it less than 6 characters long', function () {
         req.body.password = 'pwd';
         validate.userSignupValidator(req, res, next);
-        expect(req.body.validationErrors.password).to.exist;
-        expect(req.body.validationErrors.password).to.equal(
+        expect(req.validationErrors.password).to.exist;
+        expect(req.validationErrors.password).to.equal(
           'password supplied is too short',
         );
       });
@@ -241,8 +231,8 @@ describe('Validate middleware', function () {
       it('should check if it is equal to `password` field', function () {
         req.body.passwordConfirm = '';
         validate.userSignupValidator(req, res, next);
-        expect(req.body.validationErrors.passwordConfirm).to.exist;
-        expect(req.body.validationErrors.passwordConfirm).to.equal(
+        expect(req.validationErrors.passwordConfirm).to.exist;
+        expect(req.validationErrors.passwordConfirm).to.equal(
           'passwords do not match',
         );
       });

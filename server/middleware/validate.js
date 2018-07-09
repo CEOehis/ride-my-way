@@ -1,3 +1,5 @@
+import trimmer from '../utils/trimmer';
+
 /**
  * validates rest routes inputs
  *
@@ -26,7 +28,7 @@ export default class validate {
       errors.origin = 'Ride offer origin must be 2 characters or more';
     }
     if (origin) {
-      const regex = /^([0-9]|[a-z ])+(\w+)$/i;
+      const regex = /^([0-9]|[a-z,. ])+(\w+(\.|,)?)$/i;
       if (origin.length >= 2 && !regex.test(origin)) {
         errors.origin = 'Ride offer origin should be alphanumeric';
       }
@@ -40,7 +42,7 @@ export default class validate {
         'Ride offer destination must be 2 characters or more';
     }
     if (destination) {
-      const regex = /^([0-9]|[a-z ])+(\w+)$/i;
+      const regex = /^([0-9]|[a-z,. ])+(\w+(\.|,)?)$/i;
       if (destination.length >= 2 && !regex.test(destination)) {
         errors.destination = 'Ride offer destination should be alphanumeric';
       }
@@ -49,7 +51,7 @@ export default class validate {
     if (!seats) {
       errors.seats = 'Specify number of available seats';
     }
-    if (seats && Number.isNaN(parseInt(seats, 10))) {
+    if (seats && Number.isNaN(Number(seats))) {
       errors.seats = 'Available seats should be a number';
     }
     date = date && date.toString().trim();
@@ -73,7 +75,9 @@ export default class validate {
       }
     }
 
-    req.body.validationErrors = errors;
+    req.validationErrors = errors;
+    // trim req body
+    req.body = { ...req.body, ...trimmer(req.body) };
     next();
   }
 
@@ -98,7 +102,8 @@ export default class validate {
     if (password && password.length < 6) {
       errors.password = 'password supplied is too short';
     }
-    req.body.validationErrors = errors;
+    req.validationErrors = errors;
+    req.body = { ...req.body, ...trimmer({ email }) };
     next();
   }
 
@@ -133,7 +138,8 @@ export default class validate {
     if (password !== passwordConfirm) {
       errors.passwordConfirm = 'passwords do not match';
     }
-    req.body.validationErrors = errors;
+    req.validationErrors = errors;
+    req.body = { ...req.body, ...trimmer({ fullName, email }) };
     next();
   }
 }

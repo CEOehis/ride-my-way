@@ -21,9 +21,11 @@ app.use(bodyParser.json());
 // configure logging
 app.use(morgan('dev'));
 app.use(
-  app.get('env') === 'development' ?
-    expressWinston.logger(devConfig) :
-    (req, res, next) => { next(); },
+  app.get('env') === 'development'
+    ? expressWinston.logger(devConfig)
+    : (req, res, next) => {
+      next();
+    },
 );
 
 // version api. add route handler
@@ -38,9 +40,11 @@ app.use((req, res, next) => {
 
 // log errors log error stack trace in development
 app.use(
-  app.get('env') === 'development' ?
-    expressWinston.errorLogger(errorConfig) :
-    (req, res, next) => { next(); },
+  app.get('env') === 'development'
+    ? expressWinston.errorLogger(errorConfig)
+    : (req, res, next) => {
+      next();
+    },
 );
 
 // error handler

@@ -73,7 +73,10 @@ export default class RideRequest {
     const rideId = parseInt(req.params.rideId, 10);
     const { userId } = req;
     pool
-      .query('SELECT requests.id, requests.userid AS requester_id, rides.id AS ride_id, rides.userid AS creator_id, users.fullname, requests.created_at, requests.updated_at FROM requests INNER JOIN rides ON (requests.rideid = rides.id) JOIN users ON (requests.userid = users.id) WHERE requests.rideid = $1 AND rides.userid = $2;', [rideId, userId])
+      .query(
+        'SELECT requests.id, requests.userid AS requester_id, rides.id AS ride_id, rides.userid AS creator_id, users.fullname, requests.created_at, requests.updated_at FROM requests INNER JOIN rides ON (requests.rideid = rides.id) JOIN users ON (requests.userid = users.id) WHERE requests.rideid = $1 AND rides.userid = $2;',
+        [rideId, userId],
+      )
       .then((result) => {
         if (!result.rowCount) {
           return res.status(404).json({
@@ -118,26 +121,34 @@ export default class RideRequest {
           if (userid !== userId) {
             return res.status(400).json({
               status: 'error',
-              message: 'You are not allowed to respond to another users ride requests',
+              message:
+                'You are not allowed to respond to another users ride requests',
             });
           }
           // the created_at and updated_at columns are set by default on creation of request
           // compare both fields to check if the request has been responded to
           // because, ideally, user is not allowed to modify an already responded to request
           return pool
-            .query('SELECT created_at, updated_at FROM requests WHERE id = $1 and created_at = updated_at;', [requestId])
+            .query(
+              'SELECT created_at, updated_at FROM requests WHERE id = $1 and created_at = updated_at;',
+              [requestId],
+            )
             .then((selectResult) => {
               if (selectResult.rowCount === 0) {
                 // the query successfully compared both columns
                 // which happen to be equal
                 return res.status(400).json({
                   status: 'error',
-                  message: 'This request does not exist or has already been responded to',
+                  message:
+                    'This request does not exist or has already been responded to',
                 });
               }
               // otherwise it is safe to update
               return pool
-                .query('UPDATE requests SET offerstatus = $1, updated_at = NOW() WHERE id = $2', [status, requestId])
+                .query(
+                  'UPDATE requests SET offerstatus = $1, updated_at = NOW() WHERE id = $2',
+                  [status, requestId],
+                )
                 .then(() => {
                   return res.status(200).json({
                     status: 'success',
@@ -147,7 +158,8 @@ export default class RideRequest {
                 .catch(() => {
                   return res.status(500).json({
                     status: 'error',
-                    message: 'Unable to respond to ride request, make sure status value is either accepted or rejected',
+                    message:
+                      'Unable to respond to ride request, make sure status value is either accepted or rejected',
                   });
                 });
             })
