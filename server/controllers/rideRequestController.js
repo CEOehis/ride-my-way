@@ -45,10 +45,18 @@ export default class RideRequest {
               message: 'request to join ride successful',
             });
           })
-          .catch(() => {
+          .catch((error) => {
+            // eslint-disable-next-line
+            if (error.code == 23505) {
+              // postgres unique violation error means this is a duplicate entry
+              return res.status(409).json({
+                status: 'error',
+                message: 'you have already requested to join this ride',
+              });
+            }
             return res.status(500).json({
               status: 'error',
-              message: 'Unable to create request',
+              message: 'unable to create request',
             });
           });
       })
@@ -74,15 +82,20 @@ export default class RideRequest {
     const { userId } = req;
     pool
       .query(
-        'SELECT requests."requestId", requests."userId" AS "requesterId", rides."rideId" AS "rideId", rides."userId" AS "creatorId", users."fullName", requests."createdAt", requests."updatedAt" FROM requests INNER JOIN rides ON (requests."rideId" = rides."rideId") JOIN users ON (requests."userId" = users."userId") WHERE requests."rideId" = $1 AND rides."userId" = $2;',
-        [rideId, userId],
+        'SELECT requests."requestId", requests."userId" AS "requesterId", rides."rideId" AS "rideId", rides."userId" AS "creatorId", requests."offerStatus", users."fullName" as "requesterName", requests."createdAt", requests."updatedAt" FROM requests INNER JOIN rides ON (requests."rideId" = rides."rideId") JOIN users ON (requests."userId" = users."userId") WHERE requests."rideId" = $1;',
+        [rideId],
       )
       .then((result) => {
-        if (!result.rowCount) {
-          return res.status(404).json({
-            status: 'error',
-            message: 'No ride requests found for this ride offer',
-          });
+        if (result.rowCount !== 0) {
+          // also check if the creator of the ride offer
+          // is the same as the user in the current session
+          if (result.rows[0].creatorId !== userId) {
+            return res.status(403).json({
+              status: 'error',
+              message:
+                'you are not allowed to view another users ride offer requests',
+            });
+          }
         }
         return res.status(200).json({
           status: 'success',
@@ -108,7 +121,7 @@ export default class RideRequest {
     if (typeof status === 'undefined') {
       return res.status(400).json({
         status: 'error',
-        message: 'Ride request status must be supplied in request body',
+        message: 'ride request status must be supplied in request body',
       });
     }
     // check if the user is the one who created the ride offer
@@ -121,7 +134,7 @@ export default class RideRequest {
             return res.status(400).json({
               status: 'error',
               message:
-                'You are not allowed to respond to another users ride requests',
+                'you are not allowed to respond to another users ride requests',
             });
           }
           // the created_at and updated_at columns are set by default on creation of request
@@ -129,36 +142,43 @@ export default class RideRequest {
           // because, ideally, user is not allowed to modify an already responded to request
           return pool
             .query(
-              'SELECT "createdAt", "updatedAt" FROM requests WHERE "requestId" = $1 and "createdAt" = "updatedAt";',
+              'SELECT "createdAt", "updatedAt" FROM requests WHERE "requestId" = $1;',
               [requestId],
             )
             .then((selectResult) => {
               if (selectResult.rowCount === 0) {
-                // the query successfully compared both columns
-                // which happen to be equal
-                return res.status(400).json({
+                return res.status(404).json({
                   status: 'error',
-                  message:
-                    'This request does not exist or has already been responded to',
+                  message: 'this ride request does not exist',
+                });
+              }
+              const { createdAt, updatedAt } = selectResult.rows[0];
+              // use getTime() to compare both columns
+              if (
+                new Date(createdAt).getTime() !== new Date(updatedAt).getTime()
+              ) {
+                return res.status(409).json({
+                  status: 'error',
+                  message: 'this ride request has already been responded to',
                 });
               }
               // otherwise it is safe to update
               return pool
                 .query(
                   'UPDATE requests SET "offerStatus" = $1, "updatedAt" = NOW() WHERE "requestId" = $2',
-                  [status, requestId],
+                  [`${status}ed`, requestId],
                 )
                 .then(() => {
                   return res.status(200).json({
                     status: 'success',
-                    message: `Successfully ${status} ride request`,
+                    message: `Successfully ${status}ed ride request`,
                   });
                 })
                 .catch(() => {
                   return res.status(500).json({
                     status: 'error',
                     message:
-                      'Unable to respond to ride request, make sure status value is either accepted or rejected',
+                      "unable to update status. Set status value to either 'accept' or 'reject'",
                   });
                 });
             })
