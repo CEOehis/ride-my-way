@@ -93,7 +93,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
             expect(res.status).to.equal(404);
             expect(res.body.status).to.equal('error');
             expect(res.body.message).to.equal(
-              'The requested ride offer does not exist',
+              'requested ride offer does not exist',
             );
             done();
           });
@@ -109,7 +109,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
             expect(res.status).to.equal(400);
             expect(res.body.status).to.equal('error');
             expect(res.body.message).to.equal(
-              'You can not request for a ride you offered',
+              'you can not request for a ride you offered',
             );
             done();
           });
@@ -163,7 +163,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(404);
-          expect(res.body.message).to.equal('this ride request does not exist');
+          expect(res.body.message).to.equal('ride request does not exist');
           done();
         });
     });
@@ -197,7 +197,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(404);
-          expect(res.body.message).to.equal('The requested ride was not found');
+          expect(res.body.message).to.equal('requested ride offer was not found');
           done();
         });
     });

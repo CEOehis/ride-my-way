@@ -19,7 +19,7 @@ export default class Ride {
    */
   static getAllRideOffers(req, res) {
     pool
-      .query('SELECT * FROM rides')
+      .query('SELECT rides."rideId", rides."origin", rides."destination", rides."departureDate", rides."departureTime", rides."seats", users."fullName" as "rideCreator", rides."createdAt", rides."updatedAt"  FROM rides INNER JOIN users on (rides."userId" = users."userId");')
       .then((result) => {
         return res.status(200).json({
           status: 'success',
@@ -29,7 +29,7 @@ export default class Ride {
       .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: 'Unable to fetch rides',
+          message: 'unable to fetch rides',
         });
       });
   }
@@ -48,9 +48,9 @@ export default class Ride {
     const rideId = parseInt(req.params.id, 10);
     // check within datastore if ride offer with rideid exists
     pool
-      .query('SELECT * FROM rides WHERE "rideId"=$1', [rideId])
+      .query('SELECT rides."rideId", rides."origin", rides."destination", rides."departureDate", rides."departureTime", rides."seats", users."fullName" as "rideCreator", users."phone", users."email", rides."createdAt", rides."updatedAt"  FROM rides INNER JOIN users on (rides."userId" = users."userId") WHERE rides."rideId" = $1', [rideId])
       .then((result) => {
-        if (result.rowCount) {
+        if (result.rowCount !== 0) {
           return res.status(200).json({
             status: 'success',
             ride: result.rows[0],
@@ -58,13 +58,13 @@ export default class Ride {
         }
         return res.status(404).json({
           status: 'error',
-          message: 'resource not found',
+          message: 'requested ride offer was not found',
         });
       })
       .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: 'Unable to fetch requested resource',
+          message: 'unable to fetch requested ride offer',
         });
       });
   }
@@ -78,7 +78,7 @@ export default class Ride {
    * @returns {json} json object with status and ride response
    * @memberof Ride
    */
-  /* eslint-disable-next-line consistent-return */
+  /* eslint-disable-next-line */
   static createRideOffer(req, res) {
     // check for validation errors
     const errors = req.validationErrors;
@@ -95,7 +95,7 @@ export default class Ride {
       )
       .then(() => {
         return pool
-          .query('SELECT * FROM rides ORDER BY "rideId" DESC LIMIT 1')
+          .query('SELECT "origin", "destination", "departureDate", "departureTime", "seats", "userId" FROM rides ORDER BY "rideId" DESC LIMIT 1')
           .then((result) => {
             return res.status(201).json({
               status: 'success',
@@ -105,14 +105,14 @@ export default class Ride {
           .catch(() => {
             return res.status(500).json({
               status: 'error',
-              message: 'Unable to complete request',
+              message: 'unable to complete request',
             });
           });
       })
       .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: 'Unable to create ride offer',
+          message: 'unable to create ride offer',
         });
       });
   }

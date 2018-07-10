@@ -33,7 +33,7 @@ export default class User {
         if (selectResult.rowCount !== 0) {
           return res.status(409).json({
             status: 'error',
-            message: 'User with this email already exists',
+            message: 'user with this email already exists',
           });
         }
         return pool
@@ -43,12 +43,14 @@ export default class User {
           )
           .then(() => {
             pool
-              .query('SELECT * FROM users WHERE "email"=$1', [email])
+              .query('SELECT "userId", "fullName", "phone", "email" FROM users WHERE "email"=$1', [email])
               .then((result) => {
+                const user = result.rows[0];
                 // create token
-                const token = Token.generateToken(result.rows[0].userId);
+                const token = Token.generateToken(user.userId);
                 return res.status(201).json({
                   status: 'success',
+                  user,
                   token,
                 });
               });
@@ -56,7 +58,7 @@ export default class User {
           .catch(() => {
             return res.status(500).json({
               status: 'error',
-              message: 'Unable to create user',
+              message: 'unable to create user account',
             });
           });
       });
@@ -79,13 +81,13 @@ export default class User {
     }
     const { email, password } = req.body;
     return pool
-      .query('SELECT * FROM users WHERE "email"=$1', [email])
+      .query('SELECT "userId", "fullName", "phone", "email", "password" FROM users WHERE "email"=$1', [email])
       .then((result) => {
         const user = result.rows[0];
         if (!user) {
           return res.status(404).json({
             status: 'error',
-            message: 'Invalid email or password',
+            message: 'invalid email or password',
           });
         }
         // user exists so check if password supplied matches
@@ -94,27 +96,32 @@ export default class User {
           .then((valid) => {
             if (valid) {
               const token = Token.generateToken(user.userId);
+              // use rest operator to separate password from user into 'userSafeData'
+              // so it is safe to return to client
+              // eslint-disable-next-line
+              const { password, ...userSafeData } = user;
               return res.status(200).json({
                 status: 'success',
+                user: userSafeData,
                 token,
               });
             }
             return res.status(401).json({
               status: 'error',
-              message: 'Invalid email or password',
+              message: 'invalid email or password',
             });
           })
           .catch(() => {
             return res.status(500).json({
               status: 'success',
-              message: 'Unable to verify user',
+              message: 'unable to verify user',
             });
           });
       })
       .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: 'Unable to locate resource',
+          message: 'unable to fetch user information',
         });
       });
   }

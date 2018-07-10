@@ -87,7 +87,7 @@ describe('RIDE CONTROLLER API', function () {
         .end((err, res) => {
           expect(res.status).to.equal(404);
           expect(res.body.status).to.equal('error');
-          expect(res.body.message).to.equal('resource not found');
+          expect(res.body.message).to.equal('requested ride offer was not found');
           done();
         });
     });

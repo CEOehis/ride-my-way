@@ -20,18 +20,18 @@ export default class RideRequest {
     const rideId = parseInt(req.params.rideId, 10);
     const { userId } = req;
     pool
-      .query('SELECT * FROM rides WHERE "rideId" = $1', [rideId])
+      .query('SELECT "userId" FROM rides WHERE "rideId" = $1', [rideId])
       .then((result) => {
-        if (!result.rowCount) {
+        if (result.rowCount === 0) {
           return res.status(404).json({
             status: 'error',
-            message: 'The requested ride offer does not exist',
+            message: 'requested ride offer does not exist',
           });
         }
         if (+result.rows[0].userId === +userId) {
           return res.status(400).json({
             status: 'error',
-            message: 'You can not request for a ride you offered',
+            message: 'you can not request for a ride you offered',
           });
         }
         return pool
@@ -56,14 +56,14 @@ export default class RideRequest {
             }
             return res.status(500).json({
               status: 'error',
-              message: 'unable to create request',
+              message: 'unable to create ride offer request',
             });
           });
       })
       .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: 'Unable to fetch ride details',
+          message: 'unable to fetch ride details',
         });
       });
   }
@@ -126,11 +126,10 @@ export default class RideRequest {
     }
     // check if the user is the one who created the ride offer
     return pool
-      .query('SELECT * FROM rides WHERE "rideId" = $1', [rideId])
+      .query('SELECT "userId" FROM rides WHERE "rideId" = $1', [rideId])
       .then((result) => {
         if (result.rowCount !== 0) {
-          const rides = result.rows[0];
-          if (rides.userId !== userId) {
+          if (result.rows[0].userId !== userId) {
             return res.status(400).json({
               status: 'error',
               message:
@@ -149,7 +148,7 @@ export default class RideRequest {
               if (selectResult.rowCount === 0) {
                 return res.status(404).json({
                   status: 'error',
-                  message: 'this ride request does not exist',
+                  message: 'ride request does not exist',
                 });
               }
               const { createdAt, updatedAt } = selectResult.rows[0];
@@ -159,7 +158,7 @@ export default class RideRequest {
               ) {
                 return res.status(409).json({
                   status: 'error',
-                  message: 'this ride request has already been responded to',
+                  message: 'ride request has already been responded to',
                 });
               }
               // otherwise it is safe to update
@@ -185,20 +184,20 @@ export default class RideRequest {
             .catch(() => {
               return res.status(500).json({
                 status: 'error',
-                message: 'Error fetching ride offer request',
+                message: 'error fetching ride offer request',
               });
             });
         }
         return res.status(404).json({
           status: 'error',
-          message: 'The requested ride was not found',
+          message: 'requested ride offer was not found',
         });
       })
       .catch(() => {
         // could not retrieve ride
         return res.status(500).json({
           status: 'error',
-          message: 'Unable to fetch original ride offer',
+          message: 'unable to fetch original ride offer',
         });
       });
   }

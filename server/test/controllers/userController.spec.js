@@ -56,7 +56,7 @@ describe('USER CONTROLLER API', function () {
             expect(res.status).to.equal(409);
             expect(res.body.status).to.equal('error');
             expect(res.body.message).to.equal(
-              'User with this email already exists',
+              'user with this email already exists',
             );
             done();
           });
