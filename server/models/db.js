@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Client } from 'pg';
 import dotenv from 'dotenv';
 import logger from '../utils/logger';
 import { setup } from '../config/config';
@@ -11,11 +11,11 @@ const config = setup[env];
 let poolConfig;
 // check if env is production
 if (config.use_env_variable) {
-  poolConfig = new Pool({
+  poolConfig = new Client({
     connectionString: process.env[config.use_env_variable],
   });
 } else {
-  poolConfig = new Pool(config);
+  poolConfig = new Client(config);
 }
 
 const pool = poolConfig;
@@ -32,7 +32,47 @@ pool
 // set up tables
 pool
   .query(
-    "CREATE TABLE IF NOT EXISTS users(id SERIAL PRIMARY KEY, fullName VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL UNIQUE, phone VARCHAR(20), password VARCHAR(255) NOT NULL, created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW());CREATE TABLE IF NOT EXISTS rides(id SERIAL PRIMARY KEY, origin VARCHAR(255) NOT NULL, destination VARCHAR(255) NOT NULL, date DATE NOT NULL, time TIME WITH TIME ZONE NOT NULL, seats int NOT NULL, userID int, created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), FOREIGN KEY(userID) REFERENCES users(id));do $$ begin IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status') THEN CREATE TYPE status AS ENUM ('pending', 'accepted', 'rejected'); end if;end $$;CREATE TABLE IF NOT EXISTS requests(id SERIAL PRIMARY KEY, userID int, rideID int, offerStatus status DEFAULT('pending'), created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), FOREIGN KEY(userID) REFERENCES users(id), FOREIGN KEY(rideID) REFERENCES rides(id));",
+    `
+      CREATE TABLE IF NOT EXISTS users (
+        "userId" SERIAL PRIMARY KEY,
+        "fullName" VARCHAR(255) NOT NULL,
+        "email" VARCHAR(255) NOT NULL UNIQUE,
+        "phone" VARCHAR(20), password VARCHAR(255) NOT NULL,
+        "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS rides (
+        "rideId" SERIAL PRIMARY KEY,
+        "origin" VARCHAR(255) NOT NULL,
+        "destination" VARCHAR(255) NOT NULL,
+        "departureDate" DATE NOT NULL,
+        "departureTime" TIME WITH TIME ZONE NOT NULL,
+        "seats" int NOT NULL,
+        "userId" int,
+        "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        FOREIGN KEY("userId") REFERENCES users("userId")
+      );
+      do $$
+        begin IF NOT EXISTS
+          (SELECT 1 FROM pg_type WHERE typname = 'status')
+          THEN CREATE TYPE status AS ENUM ('pending', 'accepted', 'rejected');
+        end if;
+      end $$;
+      CREATE TABLE IF NOT EXISTS requests (
+        "requestId" SERIAL PRIMARY KEY,
+        "userId" int,
+        "rideId" int,
+        "offerStatus" status DEFAULT('pending'),
+        "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        FOREIGN KEY("userId") REFERENCES users("userId"),
+        FOREIGN KEY("rideId") REFERENCES rides("rideId")
+      );
+      CREATE UNIQUE INDEX IF NOT EXISTS request_idx ON requests ("userId", "rideId");
+      CREATE UNIQUE INDEX IF NOT EXISTS rides_idx
+        on rides ("origin", "destination", "departureDate", "departureTime", "seats", "userId");
+    `,
   )
   .then((res) => {
     logger.log('info', res);

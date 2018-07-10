@@ -28,7 +28,7 @@ export default class User {
     const { fullName, email, password } = req.body;
     // check within database to see if user exists
     return pool
-      .query('SELECT email FROM users WHERE email=$1', [email])
+      .query('SELECT "email" FROM users WHERE "email"=$1', [email])
       .then((selectResult) => {
         if (selectResult.rowCount !== 0) {
           return res.status(409).json({
@@ -38,15 +38,15 @@ export default class User {
         }
         return pool
           .query(
-            'INSERT INTO users(fullname, email, password, created_at) values($1, $2, $3, NOW())',
+            'INSERT INTO users("fullName", "email", "password") values($1, $2, $3)',
             [fullName, email, bcrypt.hashSync(password, 10)],
           )
           .then(() => {
             pool
-              .query('SELECT * FROM users WHERE email=$1', [email])
+              .query('SELECT * FROM users WHERE "email"=$1', [email])
               .then((result) => {
                 // create token
-                const token = Token.generateToken(result.rows[0].id);
+                const token = Token.generateToken(result.rows[0].userId);
                 return res.status(201).json({
                   status: 'success',
                   token,
@@ -79,7 +79,7 @@ export default class User {
     }
     const { email, password } = req.body;
     return pool
-      .query('SELECT * FROM users WHERE email=$1', [email])
+      .query('SELECT * FROM users WHERE "email"=$1', [email])
       .then((result) => {
         const user = result.rows[0];
         if (!user) {
@@ -93,7 +93,7 @@ export default class User {
           .compare(password, user.password)
           .then((valid) => {
             if (valid) {
-              const token = Token.generateToken(user.id);
+              const token = Token.generateToken(user.userId);
               return res.status(200).json({
                 status: 'success',
                 token,

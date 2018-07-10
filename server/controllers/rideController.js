@@ -48,7 +48,7 @@ export default class Ride {
     const rideId = parseInt(req.params.id, 10);
     // check within datastore if ride offer with rideid exists
     pool
-      .query('SELECT * FROM rides WHERE id=$1', [rideId])
+      .query('SELECT * FROM rides WHERE "rideId"=$1', [rideId])
       .then((result) => {
         if (result.rowCount) {
           return res.status(200).json({
@@ -90,12 +90,12 @@ export default class Ride {
     const { userId } = req;
     pool
       .query(
-        'INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)',
+        'INSERT INTO rides ("origin", "destination", "departureDate", "departureTime", "seats", "userId") values ($1, $2, $3, $4, $5, $6)',
         [origin, destination, date, time, seats, userId],
       )
       .then(() => {
         return pool
-          .query('SELECT * FROM rides ORDER BY id DESC LIMIT 1')
+          .query('SELECT * FROM rides ORDER BY "rideId" DESC LIMIT 1')
           .then((result) => {
             return res.status(201).json({
               status: 'success',

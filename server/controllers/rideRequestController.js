@@ -20,7 +20,7 @@ export default class RideRequest {
     const rideId = parseInt(req.params.rideId, 10);
     const { userId } = req;
     pool
-      .query('SELECT * FROM rides WHERE id = $1', [rideId])
+      .query('SELECT * FROM rides WHERE "rideId" = $1', [rideId])
       .then((result) => {
         if (!result.rowCount) {
           return res.status(404).json({
@@ -28,14 +28,14 @@ export default class RideRequest {
             message: 'The requested ride offer does not exist',
           });
         }
-        if (+result.rows[0].userid === +userId) {
+        if (+result.rows[0].userId === +userId) {
           return res.status(400).json({
             status: 'error',
             message: 'You can not request for a ride you offered',
           });
         }
         return pool
-          .query('INSERT INTO requests (userid, rideid) values ($1, $2)', [
+          .query('INSERT INTO requests ("userId", "rideId") values ($1, $2)', [
             userId,
             rideId,
           ])
@@ -74,7 +74,7 @@ export default class RideRequest {
     const { userId } = req;
     pool
       .query(
-        'SELECT requests.id, requests.userid AS requester_id, rides.id AS ride_id, rides.userid AS creator_id, users.fullname, requests.created_at, requests.updated_at FROM requests INNER JOIN rides ON (requests.rideid = rides.id) JOIN users ON (requests.userid = users.id) WHERE requests.rideid = $1 AND rides.userid = $2;',
+        'SELECT requests."requestId", requests."userId" AS "requesterId", rides."rideId" AS "rideId", rides."userId" AS "creatorId", users."fullName", requests."createdAt", requests."updatedAt" FROM requests INNER JOIN rides ON (requests."rideId" = rides."rideId") JOIN users ON (requests."userId" = users."userId") WHERE requests."rideId" = $1 AND rides."userId" = $2;',
         [rideId, userId],
       )
       .then((result) => {
@@ -113,12 +113,11 @@ export default class RideRequest {
     }
     // check if the user is the one who created the ride offer
     return pool
-      .query('SELECT * FROM rides WHERE id = $1', [rideId])
+      .query('SELECT * FROM rides WHERE "rideId" = $1', [rideId])
       .then((result) => {
         if (result.rowCount !== 0) {
           const rides = result.rows[0];
-          const { userid } = rides;
-          if (userid !== userId) {
+          if (rides.userId !== userId) {
             return res.status(400).json({
               status: 'error',
               message:
@@ -130,7 +129,7 @@ export default class RideRequest {
           // because, ideally, user is not allowed to modify an already responded to request
           return pool
             .query(
-              'SELECT created_at, updated_at FROM requests WHERE id = $1 and created_at = updated_at;',
+              'SELECT "createdAt", "updatedAt" FROM requests WHERE "requestId" = $1 and "createdAt" = "updatedAt";',
               [requestId],
             )
             .then((selectResult) => {
@@ -146,7 +145,7 @@ export default class RideRequest {
               // otherwise it is safe to update
               return pool
                 .query(
-                  'UPDATE requests SET offerstatus = $1, updated_at = NOW() WHERE id = $2',
+                  'UPDATE requests SET "offerStatus" = $1, "updatedAt" = NOW() WHERE "requestId" = $2',
                   [status, requestId],
                 )
                 .then(() => {

@@ -26,14 +26,14 @@ describe('RIDE CONTROLLER API', function () {
     });
     pool
       .query(
-        'INSERT INTO users (fullname, email, password) values ($1, $2, $3)',
+        'INSERT INTO users ("fullName", "email", "password") values ($1, $2, $3)',
         ['Marylin Doe', 'md@mail.com', 'passywordy'],
       )
       .then(() => {
-        pool.query('SELECT * FROM users LIMIT 1').then((resulti) => {
-          const userId = resulti.rows[0].id;
+        pool.query('SELECT * FROM users LIMIT 1').then((result) => {
+          const { userId } = result.rows[0];
           pool.query(
-            'INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)',
+            'INSERT INTO rides ("origin", "destination", "departureDate", "departureTime", "seats", "userId") values ($1, $2, $3, $4, $5, $6)',
             [...values, userId],
           );
         });
@@ -65,7 +65,7 @@ describe('RIDE CONTROLLER API', function () {
   describe('GET single ride offer route handler', function () {
     it('should respond with a single ride offer', function (done) {
       pool.query('SELECT * FROM rides LIMIT 1').then((result) => {
-        const rideId = result.rows[0].id;
+        const { rideId } = result.rows[0];
         request(app)
           .get(`${baseUrl}/${rideId}`)
           .set('Authorization', token)
@@ -116,7 +116,7 @@ describe('RIDE CONTROLLER API', function () {
               'origin',
               'destination',
               'seats',
-              'userid',
+              'userId',
             );
             done();
           });

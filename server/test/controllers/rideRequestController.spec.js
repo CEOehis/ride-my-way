@@ -15,7 +15,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
   before(function (done) {
     pool
       .query(
-        'INSERT INTO users (fullname, email, password) VALUES ($1, $2, $3)',
+        'INSERT INTO users ("fullName", "email", "password") VALUES ($1, $2, $3)',
         ['Femi Kuti', 'femi.kuti@mail.com', 'passywordy'],
       )
       .then(() => {
@@ -29,7 +29,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
   before(function (done) {
     pool
       .query(
-        'INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)',
+        'INSERT INTO rides ("origin", "destination", "departureDate", "departureTime", "seats", "userId") values ($1, $2, $3, $4, $5, $6)',
         ['lagos', 'ibadan', '2018-07-02', '15:30', 5, 1],
       )
       .then(() => {
@@ -42,7 +42,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
 
   before(function (done) {
     pool
-      .query('INSERT INTO requests(userid, rideid) values (3, 1)')
+      .query('INSERT INTO requests("userId", "rideId") values (3, 1)')
       .then(() => {
         done();
       });
