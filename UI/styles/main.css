@@ -13,10 +13,10 @@ html, body {
   font-size: 16px;
 }
 
-p, ul, ol {
+/* p, ul, ol {
   margin: 0;
   padding: 0;
-}
+} */
 
 * {
   box-sizing: border-box;
@@ -388,8 +388,17 @@ a {
 }
 
 /* offer a ride */
+.ride-offer {
+  grid-column: span 6/10;
+}
+
 .ride-offer h3 {
   color: rgb(173, 170, 170);
+}
+
+.ride-offer .btn-submit {
+  min-width: 150px;
+  width: 40%;
 }
 
 .upcoming-trips {
@@ -550,10 +559,12 @@ a {
 
 .search {
   display: flex;
+  padding: 0 5px;
 }
 
 .search .form-group {
   flex: 1;
+  padding: 0 5px;
 }
 
 .search .btn-submit {
