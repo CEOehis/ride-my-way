@@ -95,7 +95,7 @@ export default class Ride {
       )
       .then(() => {
         return pool
-          .query('SELECT "origin", "destination", "departureDate", "departureTime", "seats", "userId" FROM rides ORDER BY "rideId" DESC LIMIT 1')
+          .query('SELECT "origin", "destination", "departureDate", "departureTime", "seats", "userId", "createdAt", "updatedAt" FROM rides ORDER BY "rideId" DESC LIMIT 1')
           .then((result) => {
             return res.status(201).json({
               status: 'success',
