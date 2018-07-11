@@ -121,6 +121,26 @@ describe('RIDE CONTROLLER API', function () {
             done();
           });
       });
+
+      it('should not create a duplicate ride offer resource', function (done) {
+        request(app)
+          .post(baseUrl)
+          .set('Authorization', token)
+          .send({
+            origin: 'Lake Tobinport',
+            destination: 'East Brianbury',
+            seats: 1,
+            date: '2018-01-07',
+            time: '14:30',
+          })
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(409);
+            expect(res.body.status).to.equal('error');
+            expect(res.body.message).to.equal('you have already created this ride offer');
+            done();
+          });
+      });
     });
 
     describe('when passed invalid data', function () {

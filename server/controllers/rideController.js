@@ -109,7 +109,15 @@ export default class Ride {
             });
           });
       })
-      .catch(() => {
+      .catch((error) => {
+        // eslint-disable-next-line
+        if (error.code == 23505) {
+          // postgres unique violation error means this is a duplicate entry
+          return res.status(409).json({
+            status: 'error',
+            message: 'you have already created this ride offer',
+          });
+        }
         return res.status(500).json({
           status: 'error',
           message: 'unable to create ride offer',
