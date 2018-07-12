@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import expressWinston from 'express-winston';
 import morgan from 'morgan';
+import path from 'path';
 
 import logger from './utils/logger';
 import router from './routes';
@@ -27,6 +28,9 @@ app.use(
       next();
     },
 );
+
+// serve documentation
+app.use('/docS', express.static(path.join(__dirname, '../docs')));
 
 // version api. add route handler
 app.use('/api/v1', router);

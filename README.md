@@ -21,19 +21,10 @@ the ride leaves, where it is headed e.t.c
 
 ## API
 
-API is live on https://api-ridemyway-staging.herokuapp.com/api/v1/
+API is live at https://ridemywaycore.herokuapp.com/api/v1/
 
-## Endpoints and Actions
-| Verb     | Endpoint                  | Action                         |
-| :------- | :------------------------ | :----------------------------- |
-| POST     | /auth/signup              | Registers a new user           |
-| POST     | /auth/login               | Logs in a registered user      |
-| GET      | /rides                    | Fetch available ride offers    |
-| GET      | /rides/\<rideId>          | Fetch a single ride offer      |
-| POST     | /rides/\<rideId>/requests | Make a request to join a ride  |
-| POST     | /users/rides/             | Creates a ride offer           |
-| GET      | /users/rides/\<rideId>/requests | Fetch all ride requests           |
-| PUT      | /rides/\<rideId>/requests/\<requestId>   | Creates a ride offer           |
+## API Documentation
+API documentation: https://ridemywaycore.herokuapp.com/docs
 
 ## Technologies Used
 
@@ -41,121 +32,30 @@ API is live on https://api-ridemyway-staging.herokuapp.com/api/v1/
 * [ExpressJs](https://expressjs.com/)
 * [PostgreSQL](https://www.postgresql.org/)
 
-## API Usage
-
-### Users
-#### Signup
-To create a user account make a `POST` request to `/auth/signup`. The request body should contain:
-```json
-{
-    "email": "johndoe@mail.com",
-    "fullName": "John Doe",
-    "password": "somepassword",
-    "passwordConfirm": "somepassword"
-}
-```
-The server responds with a status and an access token:
-```json
-{
-	"status": "success",
-	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNTMwODY1NjgyLCJleHAiOjE1MzA5NTIwODJ9.TBCD0rXVGEM5Yez5hnWGUc0VFSot3kP5eVRXdqg1PGA"
-}
-```
-#### Sign-in
-To sign in a previously registered account make a `POST` request to `/auth/login`. The request body should contain:
-```json
-{
-    "email": "johndoe@mail.com",
-    "password": "somepassword"
-}
-```
-The server responds with a status and an access token:
-```json
-{
-	"status": "success",
-	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNTMwODY1NjgyLCJleHAiOjE1MzA5NTIwODJ9.TBCD0rXVGEM5Yez5hnWGUc0VFSot3kP5eVRXdqg1PGA"
-}
-```
-
-The token obtained from authentication above must be sent to all other protected routes in the request `Authorization` header in the form along with whatever payload:
-```json
-"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNTMwODY1NjgyLCJleHAiOjE1MzA5NTIwODJ9.TBCD0rXVGEM5Yez5hnWGUc0VFSot3kP5eVRXdqg1PGA"
-```
-
-### Rides
-#### Get all ride offers
-To get all ride offers send a `GET` request to `/rides`. The response is in this format:
-```json
-{
-	"status": "success",
-	"rides": [
-		{
-			"id": 1,
-			"origin": "Iyana paja",
-			"destination": "yaba",
-			"date": "2018-07-02T00:00:00.000Z",
-			"time": "11:20:00+00",
-			"seats": 3,
-			"userid": 6,
-			"created_at": "2018-07-05T13:48:34.134Z",
-			"updated_at": "2018-07-05T13:48:34.134Z"
-		},
-		{
-			"id": 2,
-			"origin": "some random place",
-			"destination": "some other random place",
-			"date": "2018-07-04T00:00:00.000Z",
-			"time": "06:00:00+00",
-			"seats": 2,
-			"userid": 3,
-			"created_at": "2018-07-06T01:16:35.734Z",
-			"updated_at": "2018-07-06T01:16:35.734Z"
-		}
-	]
-}
-```
-#### Get a ride offer details
-To get all ride offers send a `GET` request to `/rides/:rideId`. The response is in this format:
-```json
-{
-	"status": "success",
-	"ride": {
-		"id": 2,
-		"origin": "Iyana paja",
-		"destination": "yaba",
-		"date": "2018-07-02T00:00:00.000Z",
-		"time": "11:20:00+00",
-		"seats": 2,
-		"userid": 6,
-		"created_at": "2018-07-05T13:48:34.134Z",
-		"updated_at": "2018-07-05T13:48:34.134Z"
-	}
-}
-```
-
-
 ## Installation
 
 1. Install [`node`](https://nodejs.org/en/download/), version 8 or greater
 
-2. Clone the repository
+2. Install [`PostgreSQL`](https://www.postgresql.org/)
+
+3. Clone the repository
 
     ```
     git clone git@github.com:CEOehis/ride-my-way.git
     ```
 
-3. Navigate to the project directory
+4. Navigate to the project directory
 
     ```
     cd ~/path/to/ride-my-way
     ```
 
-4. Install all dependencies
+5. Install all dependencies
 
     ```
     npm install
     ```
-5. Start the app
+6. Start the app
 
     ```
     npm run watch:serve-dev
