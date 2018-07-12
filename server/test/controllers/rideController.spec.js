@@ -1,12 +1,12 @@
-import chai, { expect } from 'chai';
+import chai, { expect, request } from 'chai';
 import chaiHttp from 'chai-http';
 
 import app, { server } from '../../index';
-import { RideOffers } from '../../dataStore/RideOffers';
 import Token from '../../utils/Token';
 import pool from '../../models/db';
 
 const token = `Bearer ${Token.generateToken(1)}`;
+const baseUrl = '/api/v1/rides';
 
 chai.use(chaiHttp);
 
@@ -26,14 +26,14 @@ describe('RIDE CONTROLLER API', function () {
     });
     pool
       .query(
-        'INSERT INTO users (fullname, email, password) values ($1, $2, $3)',
+        'INSERT INTO users ("fullName", "email", "password") values ($1, $2, $3)',
         ['Marylin Doe', 'md@mail.com', 'passywordy'],
       )
       .then(() => {
-        pool.query('SELECT * FROM users LIMIT 1').then((resulti) => {
-          const userId = resulti.rows[0].id;
+        pool.query('SELECT * FROM users LIMIT 1').then((result) => {
+          const { userId } = result.rows[0];
           pool.query(
-            'INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)',
+            'INSERT INTO rides ("origin", "destination", "departureDate", "departureTime", "seats", "userId") values ($1, $2, $3, $4, $5, $6)',
             [...values, userId],
           );
         });
@@ -48,9 +48,8 @@ describe('RIDE CONTROLLER API', function () {
 
   describe('GET all ride offers route handler', function () {
     it('should respond with an array of all ride offers', function (done) {
-      chai
-        .request(app)
-        .get('/api/v1/rides')
+      request(app)
+        .get(baseUrl)
         .set('Authorization', token)
         .end((err, res) => {
           expect(err).to.not.exist;
@@ -66,10 +65,9 @@ describe('RIDE CONTROLLER API', function () {
   describe('GET single ride offer route handler', function () {
     it('should respond with a single ride offer', function (done) {
       pool.query('SELECT * FROM rides LIMIT 1').then((result) => {
-        const rideId = result.rows[0].id;
-        chai
-          .request(app)
-          .get(`/api/v1/rides/${rideId}`)
+        const { rideId } = result.rows[0];
+        request(app)
+          .get(`${baseUrl}/${rideId}`)
           .set('Authorization', token)
           .end((err, res) => {
             expect(err).to.not.exist;
@@ -83,14 +81,13 @@ describe('RIDE CONTROLLER API', function () {
     });
 
     it('should respond with a "404" message if resource does not exits', function (done) {
-      chai
-        .request(app)
-        .get('/api/v1/rides/30')
+      request(app)
+        .get(`${baseUrl}/30`)
         .set('Authorization', token)
         .end((err, res) => {
           expect(res.status).to.equal(404);
           expect(res.body.status).to.equal('error');
-          expect(res.body.message).to.equal('resource not found');
+          expect(res.body.message).to.equal('requested ride offer was not found');
           done();
         });
     });
@@ -99,9 +96,8 @@ describe('RIDE CONTROLLER API', function () {
   describe('POST ride offer route handler', function () {
     describe('when passed valid data', function () {
       it('should respond with success message along with created ride offer resource', function (done) {
-        chai
-          .request(app)
-          .post('/api/v1/users/rides')
+        request(app)
+          .post(baseUrl)
           .set('Authorization', token)
           .send({
             origin: 'Lake Tobinport',
@@ -120,8 +116,28 @@ describe('RIDE CONTROLLER API', function () {
               'origin',
               'destination',
               'seats',
-              'userid',
+              'userId',
             );
+            done();
+          });
+      });
+
+      it('should not create a duplicate ride offer resource', function (done) {
+        request(app)
+          .post(baseUrl)
+          .set('Authorization', token)
+          .send({
+            origin: 'Lake Tobinport',
+            destination: 'East Brianbury',
+            seats: 1,
+            date: '2018-01-07',
+            time: '14:30',
+          })
+          .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res.status).to.equal(409);
+            expect(res.body.status).to.equal('error');
+            expect(res.body.message).to.equal('you have already created this ride offer');
             done();
           });
       });
@@ -129,18 +145,14 @@ describe('RIDE CONTROLLER API', function () {
 
     describe('when passed invalid data', function () {
       it('should not create a new ride offer', function (done) {
-        chai
-          .request(app)
-          .post('/api/v1/users/rides')
+        request(app)
+          .post(baseUrl)
           .set('Authorization', token)
           .send({
-            id: RideOffers.length + 1,
             from: '   ',
             to: 'East Brianbury',
             userId: 1,
             pricePerSeat: 241,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
           })
           .end((err, res) => {
             expect(err).to.not.exist;

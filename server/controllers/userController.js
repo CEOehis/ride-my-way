@@ -21,33 +21,46 @@ export default class User {
    */
   static signup(req, res) {
     // check for validation errors
-    const errors = req.body.validationErrors;
+    const errors = req.validationErrors;
     if (!isEmpty(errors)) {
       return res.status(400).json({ errors });
     }
     const { fullName, email, password } = req.body;
+    // check within database to see if user exists
     return pool
-      .query(
-        'INSERT INTO users(fullname, email, password, created_at) values($1, $2, $3, NOW())',
-        [fullName, email, bcrypt.hashSync(password, 10)],
-      )
-      .then(() => {
-        pool
-          .query('SELECT * FROM users WHERE email=$1', [email])
-          .then((result) => {
-            // create token
-            const token = Token.generateToken(result.rows[0].id);
-            return res.status(201).json({
-              status: 'success',
-              token,
+      .query('SELECT "email" FROM users WHERE "email"=$1', [email])
+      .then((selectResult) => {
+        if (selectResult.rowCount !== 0) {
+          return res.status(409).json({
+            status: 'error',
+            message: 'user with this email already exists',
+          });
+        }
+        return pool
+          .query(
+            'INSERT INTO users("fullName", "email", "password") values($1, $2, $3)',
+            [fullName, email, bcrypt.hashSync(password, 10)],
+          )
+          .then(() => {
+            pool
+              .query('SELECT "userId", "fullName", "phone", "email" FROM users WHERE "email"=$1', [email])
+              .then((result) => {
+                const user = result.rows[0];
+                // create token
+                const token = Token.generateToken(user.userId);
+                return res.status(201).json({
+                  status: 'success',
+                  user,
+                  token,
+                });
+              });
+          })
+          .catch(() => {
+            return res.status(500).json({
+              status: 'error',
+              message: 'unable to create user account',
             });
           });
-      })
-      .catch((e) => {
-        return res.status(500).json({
-          status: 'error',
-          error: e,
-        });
       });
   }
 
@@ -62,19 +75,19 @@ export default class User {
    */
   static signin(req, res) {
     // check for validation errors
-    const errors = req.body.validationErrors;
+    const errors = req.validationErrors;
     if (!isEmpty(errors)) {
       return res.status(400).json({ errors });
     }
     const { email, password } = req.body;
     return pool
-      .query('SELECT * FROM users WHERE email=$1', [email])
+      .query('SELECT "userId", "fullName", "phone", "email", "password" FROM users WHERE "email"=$1', [email])
       .then((result) => {
         const user = result.rows[0];
         if (!user) {
           return res.status(404).json({
             status: 'error',
-            message: 'User does not exist',
+            message: 'invalid email or password',
           });
         }
         // user exists so check if password supplied matches
@@ -82,28 +95,33 @@ export default class User {
           .compare(password, user.password)
           .then((valid) => {
             if (valid) {
-              const token = Token.generateToken(user.id);
+              const token = Token.generateToken(user.userId);
+              // use rest operator to separate password from user into 'userSafeData'
+              // so it is safe to return to client
+              // eslint-disable-next-line
+              const { password, ...userSafeData } = user;
               return res.status(200).json({
                 status: 'success',
+                user: userSafeData,
                 token,
               });
             }
             return res.status(401).json({
               status: 'error',
-              message: 'wrong password',
+              message: 'invalid email or password',
             });
           })
-          .catch((error) => {
+          .catch(() => {
             return res.status(500).json({
               status: 'success',
-              message: error,
+              message: 'unable to verify user',
             });
           });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'unable to fetch user information',
         });
       });
   }

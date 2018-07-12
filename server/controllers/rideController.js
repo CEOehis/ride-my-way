@@ -19,17 +19,17 @@ export default class Ride {
    */
   static getAllRideOffers(req, res) {
     pool
-      .query('SELECT * FROM rides')
+      .query('SELECT rides."rideId", rides."origin", rides."destination", rides."departureDate", rides."departureTime", rides."seats", users."fullName" as "rideCreator", rides."createdAt", rides."updatedAt"  FROM rides INNER JOIN users on (rides."userId" = users."userId");')
       .then((result) => {
         return res.status(200).json({
           status: 'success',
           rides: result.rows,
         });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'unable to fetch rides',
         });
       });
   }
@@ -48,9 +48,9 @@ export default class Ride {
     const rideId = parseInt(req.params.id, 10);
     // check within datastore if ride offer with rideid exists
     pool
-      .query('SELECT * FROM rides WHERE id=$1', [rideId])
+      .query('SELECT rides."rideId", rides."origin", rides."destination", rides."departureDate", rides."departureTime", rides."seats", users."fullName" as "rideCreator", users."phone", users."email", rides."createdAt", rides."updatedAt"  FROM rides INNER JOIN users on (rides."userId" = users."userId") WHERE rides."rideId" = $1', [rideId])
       .then((result) => {
-        if (result.rowCount) {
+        if (result.rowCount !== 0) {
           return res.status(200).json({
             status: 'success',
             ride: result.rows[0],
@@ -58,13 +58,13 @@ export default class Ride {
         }
         return res.status(404).json({
           status: 'error',
-          message: 'resource not found',
+          message: 'requested ride offer was not found',
         });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'unable to fetch requested ride offer',
         });
       });
   }
@@ -78,10 +78,10 @@ export default class Ride {
    * @returns {json} json object with status and ride response
    * @memberof Ride
    */
-  /* eslint-disable-next-line consistent-return */
+  /* eslint-disable-next-line */
   static createRideOffer(req, res) {
     // check for validation errors
-    const errors = req.body.validationErrors;
+    const errors = req.validationErrors;
     if (!isEmpty(errors)) {
       return res.status(400).json({ errors });
     }
@@ -90,29 +90,37 @@ export default class Ride {
     const { userId } = req;
     pool
       .query(
-        'INSERT INTO rides (origin, destination, date, time, seats, userid) values ($1, $2, $3, $4, $5, $6)',
+        'INSERT INTO rides ("origin", "destination", "departureDate", "departureTime", "seats", "userId") values ($1, $2, $3, $4, $5, $6)',
         [origin, destination, date, time, seats, userId],
       )
       .then(() => {
         return pool
-          .query('SELECT * FROM rides ORDER BY id DESC LIMIT 1')
+          .query('SELECT "origin", "destination", "departureDate", "departureTime", "seats", "userId", "createdAt", "updatedAt" FROM rides ORDER BY "rideId" DESC LIMIT 1')
           .then((result) => {
             return res.status(201).json({
               status: 'success',
               ride: result.rows[0],
             });
           })
-          .catch((error) => {
+          .catch(() => {
             return res.status(500).json({
               status: 'error',
-              message: error,
+              message: 'unable to complete request',
             });
           });
       })
       .catch((error) => {
+        // eslint-disable-next-line
+        if (error.code == 23505) {
+          // postgres unique violation error means this is a duplicate entry
+          return res.status(409).json({
+            status: 'error',
+            message: 'you have already created this ride offer',
+          });
+        }
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'unable to create ride offer',
         });
       });
   }

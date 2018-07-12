@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 import express from 'express';
 import expressWinston from 'express-winston';
 import morgan from 'morgan';
-import winston from 'winston';
 
 import logger from './utils/logger';
 import router from './routes';
+import { devConfig, errorConfig } from './config/loggerConf';
 
 // import dotenv config at top level
 dotenv.config();
@@ -21,36 +21,40 @@ app.use(bodyParser.json());
 // configure logging
 app.use(morgan('dev'));
 app.use(
-  expressWinston.logger({
-    transports: [
-      new winston.transports.Console({
-        json: true,
-      }),
-    ],
-    meta: true,
-    msg: 'HTTP {{req.method}} {{req.url}}',
-    expressFormat: true,
-    colorize: true,
-  }),
+  app.get('env') === 'development'
+    ? expressWinston.logger(devConfig)
+    : (req, res, next) => {
+      next();
+    },
 );
 
 // version api. add route handler
 app.use('/api/v1', router);
 
-// log errors
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// log errors log error stack trace in development
 app.use(
-  expressWinston.errorLogger({
-    transports: [
-      new winston.transports.Console({
-        colorize: true,
-        json: true,
-      }),
-    ],
-  }),
+  app.get('env') === 'development'
+    ? expressWinston.errorLogger(errorConfig)
+    : (req, res, next) => {
+      next();
+    },
 );
 
-app.use('/', (req, res) => {
-  res.status(404).send('page not found');
+// error handler
+/* eslint-disable-next-line no-unused-vars */
+app.use(({ status, message }, req, res, next) => {
+  res.status(status || 500);
+  res.json({
+    status: 'error',
+    message,
+  });
 });
 
 // configure port and listen for requests

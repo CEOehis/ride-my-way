@@ -20,22 +20,22 @@ export default class RideRequest {
     const rideId = parseInt(req.params.rideId, 10);
     const { userId } = req;
     pool
-      .query('SELECT * FROM rides WHERE id = $1', [rideId])
+      .query('SELECT "userId" FROM rides WHERE "rideId" = $1', [rideId])
       .then((result) => {
-        if (!result.rowCount) {
+        if (result.rowCount === 0) {
           return res.status(404).json({
             status: 'error',
-            message: 'The requested ride offer does not exist',
+            message: 'requested ride offer does not exist',
           });
         }
-        if (+result.rows[0].userid === +userId) {
+        if (+result.rows[0].userId === +userId) {
           return res.status(400).json({
             status: 'error',
-            message: 'You can not request for a ride you offered',
+            message: 'you can not request for a ride you offered',
           });
         }
         return pool
-          .query('INSERT INTO requests (userid, rideid) values ($1, $2)', [
+          .query('INSERT INTO requests ("userId", "rideId") values ($1, $2)', [
             userId,
             rideId,
           ])
@@ -46,16 +46,24 @@ export default class RideRequest {
             });
           })
           .catch((error) => {
+            // eslint-disable-next-line
+            if (error.code == 23505) {
+              // postgres unique violation error means this is a duplicate entry
+              return res.status(409).json({
+                status: 'error',
+                message: 'you have already requested to join this ride',
+              });
+            }
             return res.status(500).json({
               status: 'error',
-              message: error,
+              message: 'unable to create ride offer request',
             });
           });
       })
-      .catch((error) => {
+      .catch(() => {
         return res.status(500).json({
           status: 'error',
-          message: error,
+          message: 'unable to fetch ride details',
         });
       });
   }
@@ -73,13 +81,21 @@ export default class RideRequest {
     const rideId = parseInt(req.params.rideId, 10);
     const { userId } = req;
     pool
-      .query('SELECT requests.id, requests.userid AS requester_id, rides.id AS ride_id, rides.userid AS creator_id, users.fullname, requests.created_at, requests.updated_at FROM requests INNER JOIN rides ON (requests.rideid = rides.id) JOIN users ON (requests.userid = users.id) WHERE requests.rideid = $1 AND rides.userid = $2;', [rideId, userId])
+      .query(
+        'SELECT requests."requestId", requests."userId" AS "requesterId", rides."rideId" AS "rideId", rides."userId" AS "creatorId", requests."offerStatus", users."fullName" as "requesterName", requests."createdAt", requests."updatedAt" FROM requests INNER JOIN rides ON (requests."rideId" = rides."rideId") JOIN users ON (requests."userId" = users."userId") WHERE requests."rideId" = $1;',
+        [rideId],
+      )
       .then((result) => {
-        if (!result.rowCount) {
-          return res.status(404).json({
-            status: 'error',
-            message: 'No ride requests found for this ride offer',
-          });
+        if (result.rowCount !== 0) {
+          // also check if the creator of the ride offer
+          // is the same as the user in the current session
+          if (result.rows[0].creatorId !== userId) {
+            return res.status(403).json({
+              status: 'error',
+              message:
+                'you are not allowed to view another users ride offer requests',
+            });
+          }
         }
         return res.status(200).json({
           status: 'success',
@@ -105,69 +121,83 @@ export default class RideRequest {
     if (typeof status === 'undefined') {
       return res.status(400).json({
         status: 'error',
-        message: 'Ride request status must be supplied in request body',
+        message: 'ride request status must be supplied in request body',
       });
     }
     // check if the user is the one who created the ride offer
     return pool
-      .query('SELECT * FROM rides WHERE id = $1', [rideId])
+      .query('SELECT "userId" FROM rides WHERE "rideId" = $1', [rideId])
       .then((result) => {
         if (result.rowCount !== 0) {
-          const rides = result.rows[0];
-          const { userid } = rides;
-          if (userid !== userId) {
+          if (result.rows[0].userId !== userId) {
             return res.status(400).json({
               status: 'error',
-              message: 'You are not allowed to respond to another users ride requests',
+              message:
+                'you are not allowed to respond to another users ride requests',
             });
           }
           // the created_at and updated_at columns are set by default on creation of request
           // compare both fields to check if the request has been responded to
           // because, ideally, user is not allowed to modify an already responded to request
           return pool
-            .query('SELECT created_at, updated_at FROM requests WHERE id = $1 and created_at = updated_at;', [requestId])
+            .query(
+              'SELECT "createdAt", "updatedAt" FROM requests WHERE "requestId" = $1;',
+              [requestId],
+            )
             .then((selectResult) => {
               if (selectResult.rowCount === 0) {
-                // the query successfully compared both columns
-                // which happen to be equal
-                return res.status(400).json({
+                return res.status(404).json({
                   status: 'error',
-                  message: 'This request does not exist or has already been responded to',
+                  message: 'ride request does not exist',
+                });
+              }
+              const { createdAt, updatedAt } = selectResult.rows[0];
+              // use getTime() to compare both columns
+              if (
+                new Date(createdAt).getTime() !== new Date(updatedAt).getTime()
+              ) {
+                return res.status(409).json({
+                  status: 'error',
+                  message: 'ride request has already been responded to',
                 });
               }
               // otherwise it is safe to update
               return pool
-                .query('UPDATE requests SET offerstatus = $1, updated_at = NOW() WHERE id = $2', [status, requestId])
+                .query(
+                  'UPDATE requests SET "offerStatus" = $1, "updatedAt" = NOW() WHERE "requestId" = $2',
+                  [`${status}ed`, requestId],
+                )
                 .then(() => {
                   return res.status(200).json({
                     status: 'success',
-                    message: `Successfully ${status} ride request`,
+                    message: `Successfully ${status}ed ride request`,
                   });
                 })
                 .catch(() => {
                   return res.status(500).json({
                     status: 'error',
-                    message: 'Unable to respond to ride request, make sure status value is either accepted or rejected',
+                    message:
+                      "unable to update status. Set status value to either 'accept' or 'reject'",
                   });
                 });
             })
             .catch(() => {
               return res.status(500).json({
                 status: 'error',
-                message: 'Error fetching ride offer request',
+                message: 'error fetching ride offer request',
               });
             });
         }
         return res.status(404).json({
           status: 'error',
-          message: 'The requested ride was not found',
+          message: 'requested ride offer was not found',
         });
       })
       .catch(() => {
         // could not retrieve ride
         return res.status(500).json({
           status: 'error',
-          message: 'Unable to fetch original ride offer',
+          message: 'unable to fetch original ride offer',
         });
       });
   }

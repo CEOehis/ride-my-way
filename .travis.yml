@@ -6,6 +6,10 @@ node_js:
 services:
   - postgresql
 
+addons:
+  postgresql: "9.5"
+
+
 before_script:
   - psql -c 'drop database if exists ridemyway_test;' -U postgres
   - psql -c 'create database ridemyway_test;' -U postgres
