@@ -76,3 +76,6 @@ UI is hosted on https://ceoehis.github.io/ride-my-way/UI
   * [x] The number of rides a user has given.
   * [x] The number of rides a user has taken.
   * [x] List of rides taken and given.
+
+## License
+This project is [MIT LICENSED](/LICENSE)
