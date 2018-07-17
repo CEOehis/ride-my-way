@@ -4,6 +4,9 @@ import express from 'express';
 import expressWinston from 'express-winston';
 import morgan from 'morgan';
 import path from 'path';
+import compression from 'compression';
+import helmet from 'helmet';
+import cors from 'cors';
 
 import logger from './utils/logger';
 import router from './routes';
@@ -14,6 +17,11 @@ dotenv.config();
 
 // set up express app
 const app = express();
+
+// compression and header security middleware
+app.use(compression());
+app.use(helmet());
+app.use(cors());
 
 // configure bodyparser middleware
 app.use(bodyParser.urlencoded({ extended: true }));

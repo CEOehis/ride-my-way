@@ -113,7 +113,7 @@ export default class User {
           })
           .catch(() => {
             return res.status(500).json({
-              status: 'success',
+              status: 'error',
               message: 'unable to verify user',
             });
           });
