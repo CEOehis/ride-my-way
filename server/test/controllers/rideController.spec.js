@@ -163,4 +163,20 @@ describe('RIDE CONTROLLER API', function () {
       });
     });
   });
+
+  describe('getUsersRideOffers()', function () {
+    it('should get all ride offers by a particular user', function (done) {
+      request(app)
+        .get(`${baseUrl}/user`)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(200);
+          expect(res.type).to.equal('application/json');
+          expect(res.body.rides).to.be.an('array');
+          expect(res.body.status).to.equal('success');
+          done();
+        });
+    });
+  });
 });

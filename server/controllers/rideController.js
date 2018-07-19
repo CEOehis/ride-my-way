@@ -35,6 +35,33 @@ export default class Ride {
   }
 
   /**
+   * Get users ride offers
+   *
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @returns {json} json object with status and response data
+   * @memberof Ride
+   */
+  static getUsersRideOffers(req, res) {
+    const { userId } = req;
+    pool
+      .query('SELECT rides."rideId", rides."origin", rides."destination", rides."departureDate", rides."departureTime", rides."seats", users."fullName" as "rideCreator", rides."createdAt", rides."updatedAt"  FROM rides INNER JOIN users on (rides."userId" = users."userId") WHERE rides."userId" = $1;', [userId])
+      .then((result) => {
+        return res.status(200).json({
+          status: 'success',
+          rides: result.rows,
+        });
+      })
+      .catch(() => {
+        return res.status(500).json({
+          status: 'error',
+          message: 'unable to fetch users rides',
+        });
+      });
+  }
+
+  /**
    * Get single ride offer
    *
    * @static

@@ -5,3 +5,4 @@ coverage
 coverage*
 .env
 .vscode
+notes.md
