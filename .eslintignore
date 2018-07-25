@@ -3,3 +3,4 @@ dist-server/
 UI/
 gulpfile.js
 coverage
+docs/

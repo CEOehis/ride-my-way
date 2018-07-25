@@ -10,7 +10,7 @@ const baseUrl = '/api/v1/rides';
 
 chai.use(chaiHttp);
 
-describe('RIDE CONTROLLER API', function () {
+describe('RIDE CONTROLLER', function () {
   // empty out ride offers collection, then add one entry
   const rideOffer = {
     origin: 'Reichelchester',
@@ -46,7 +46,7 @@ describe('RIDE CONTROLLER API', function () {
     done();
   });
 
-  describe('GET all ride offers route handler', function () {
+  describe('getAllRideOffers()', function () {
     it('should respond with an array of all ride offers', function (done) {
       request(app)
         .get(baseUrl)
@@ -62,7 +62,7 @@ describe('RIDE CONTROLLER API', function () {
     });
   });
 
-  describe('GET single ride offer route handler', function () {
+  describe('getRideOffer()', function () {
     it('should respond with a single ride offer', function (done) {
       pool.query('SELECT * FROM rides LIMIT 1').then((result) => {
         const { rideId } = result.rows[0];
@@ -87,13 +87,15 @@ describe('RIDE CONTROLLER API', function () {
         .end((err, res) => {
           expect(res.status).to.equal(404);
           expect(res.body.status).to.equal('error');
-          expect(res.body.message).to.equal('requested ride offer was not found');
+          expect(res.body.message).to.equal(
+            'requested ride offer was not found',
+          );
           done();
         });
     });
   });
 
-  describe('POST ride offer route handler', function () {
+  describe('createRideOffer()', function () {
     describe('when passed valid data', function () {
       it('should respond with success message along with created ride offer resource', function (done) {
         request(app)
@@ -137,7 +139,9 @@ describe('RIDE CONTROLLER API', function () {
             expect(err).to.not.exist;
             expect(res.status).to.equal(409);
             expect(res.body.status).to.equal('error');
-            expect(res.body.message).to.equal('you have already created this ride offer');
+            expect(res.body.message).to.equal(
+              'you have already created this ride offer',
+            );
             done();
           });
       });

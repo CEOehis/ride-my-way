@@ -105,6 +105,43 @@ export default class RideRequest {
   }
 
   /**
+   * get requests for a single ride offer
+   *
+   * @static
+   * @param {object} req express Request object
+   * @param {object} res express Response object
+   * @param {func} next middleware function
+   * @returns {json} json object with status and array of request or response message
+   * @memberof RideRequest
+   */
+  static getRequestsByRideId(req, res, next) {
+    // use Number to try to cast rideId query to a number
+    // then check if its value type is a number
+    const rideId = Number(req.query.rideId);
+    if (Number.isNaN(rideId)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'invalid query parameter supplied',
+      });
+    }
+    return pool
+      .query(
+        `SELECT "requestId", "userId", "rideId", "offerStatus",
+      "createdAt", "updatedAt" FROM requests WHERE "rideId"=$1`,
+        [rideId],
+      )
+      .then((result) => {
+        return res.status(200).json({
+          status: 'success',
+          requests: result.rows,
+        });
+      })
+      .catch((error) => {
+        next(error);
+      });
+  }
+
+  /**
    * accept or reject a ride request
    *
    * @static

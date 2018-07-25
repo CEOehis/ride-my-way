@@ -10,7 +10,7 @@ const baseUrl = '/api/v1/rides';
 
 chai.use(chaiHttp);
 
-describe('RIDE REQUEST CONTROLLER API', function () {
+describe('RIDE REQUEST CONTROLLER', function () {
   // empty out ride offers collection, then add one entry
   before(function (done) {
     pool
@@ -53,7 +53,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
     done();
   });
 
-  describe('POST ride offer request route handler', function () {
+  describe('createRequest()', function () {
     describe('when passed valid data', function () {
       it('should create a new request to an existing ride offer', function (done) {
         request(app)
@@ -117,7 +117,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
     });
   });
 
-  describe('GET all ride offer requests route handler', function () {
+  describe('getRideRequests()', function () {
     it('should return all requests for a ride offer', function (done) {
       const rideCreatorToken = `Bearer ${Token.generateToken(1)}`;
       request(app)
@@ -133,7 +133,7 @@ describe('RIDE REQUEST CONTROLLER API', function () {
     });
   });
 
-  describe('PUT ride offer requests route handler', function () {
+  describe('respondToRequests()', function () {
     it('should not allow a user respond to another users ride requests', function (done) {
       const otherUserToken = `Bearer ${Token.generateToken(3)}`;
       request(app)
@@ -197,7 +197,37 @@ describe('RIDE REQUEST CONTROLLER API', function () {
         .end((err, res) => {
           expect(err).to.not.exist;
           expect(res.status).to.equal(404);
-          expect(res.body.message).to.equal('requested ride offer was not found');
+          expect(res.body.message).to.equal(
+            'requested ride offer was not found',
+          );
+          done();
+        });
+    });
+  });
+
+  describe('getRequestsByRideId()', function () {
+    it('should fetch all requests belonging to a particular ride', function (done) {
+      const url = '/api/v1/requests?rideId=1';
+      request(app)
+        .get(url)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(200);
+          expect(res.body.requests).to.be.an('array');
+          done();
+        });
+    });
+
+    it('should return a 400 if wrong query param is supplied', function (done) {
+      const url = '/api/v1/requests?rideId=one';
+      request(app)
+        .get(url)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(err).to.not.exist;
+          expect(res.status).to.equal(400);
+          expect(res.body.message).to.equal('invalid query parameter supplied');
           done();
         });
     });

@@ -38,7 +38,7 @@ app.use(
 );
 
 // serve documentation
-app.use('/docS', express.static(path.join(__dirname, '../docs')));
+app.use('/docs', express.static(path.join(__dirname, '../docs')));
 
 // version api. add route handler
 app.use('/api/v1', router);

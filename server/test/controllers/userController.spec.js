@@ -7,7 +7,7 @@ import app, { server } from '../../index';
 chai.use(chaiHttp);
 const baseUrl = '/api/v1/users';
 
-describe('USER CONTROLLER API', function () {
+describe('USER CONTROLLER', function () {
   // empty users table
   before(function (done) {
     pool
@@ -25,7 +25,7 @@ describe('USER CONTROLLER API', function () {
     done();
   });
 
-  describe('SIGN UP route handler', function () {
+  describe('signup()', function () {
     describe('when passed valid data', function () {
       const userData = {
         fullName: 'John Doe',
@@ -84,7 +84,7 @@ describe('USER CONTROLLER API', function () {
     });
   });
 
-  describe('SIGN IN route handler', function () {
+  describe('signin()', function () {
     describe('when passed valid data/credentials', function () {
       it('should authenticate a user respond with jwt', function (done) {
         const userData = {
