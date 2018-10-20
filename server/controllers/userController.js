@@ -125,4 +125,37 @@ export default class User {
         });
       });
   }
+
+  /**
+   * get user profile
+   *
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @returns {json} json object with status and user data/failure response
+   * @memberof User
+   */
+  static getUserProfile(req, res) {
+    const { userId } = req;
+    return pool
+      .query('SELECT "userId", "fullName", "phone", "email" FROM users WHERE "userId"=$1', [userId])
+      .then((result) => {
+        if (result.rowCount < 1) {
+          return res.status(404).json({
+            status: 'error',
+            message: 'User does not exist',
+          });
+        }
+        return res.status(200).json({
+          status: 'success',
+          user: result.rows[0],
+        });
+      })
+      .catch(() => {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Unable to fetch user information',
+        });
+      });
+  }
 }

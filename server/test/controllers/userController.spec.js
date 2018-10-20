@@ -1,6 +1,7 @@
 import chai, { expect, request } from 'chai';
 import chaiHttp from 'chai-http';
 
+import Token from '../../utils/Token';
 import pool from '../../models/db';
 import app, { server } from '../../index';
 
@@ -121,6 +122,34 @@ describe('USER CONTROLLER', function () {
             done();
           });
       });
+    });
+  });
+
+
+  describe('getUserProfile()', function () {
+    it('should return the users profile', function (done) {
+      const token = `Bearer ${Token.generateToken(1)}`;
+      request(app)
+        .get(`${baseUrl}`)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.status).to.equal('success');
+          done();
+        });
+    });
+
+    it('should return error if the users profile does not exist', function (done) {
+      const token = `Bearer ${Token.generateToken(34)}`;
+      request(app)
+        .get(`${baseUrl}`)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          expect(res.body.status).to.equal('error');
+          expect(res.body.message).to.equal('User does not exist');
+          done();
+        });
     });
   });
 });

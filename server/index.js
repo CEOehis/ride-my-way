@@ -37,6 +37,12 @@ app.use(
     },
 );
 
+app.get('/', (req, res) => {
+  return res.status(200).json({
+    message: 'Welcome to Ride-my-way',
+  });
+});
+
 // serve documentation
 app.use('/docs', express.static(path.join(__dirname, '../docs')));
 

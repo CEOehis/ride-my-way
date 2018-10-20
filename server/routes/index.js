@@ -11,6 +11,7 @@ router.post('/users/login', validate.userSigninValidator, User.signin);
 
 // protected routes
 router.use('/rides', auth.authenticateUser);
+router.get('/users', auth.authenticateUser, User.getUserProfile);
 router.get('/rides', Ride.getAllRideOffers);
 router.get('/rides/user', Ride.getUsersRideOffers);
 router.get('/rides/:id', Ride.getRideOffer);
