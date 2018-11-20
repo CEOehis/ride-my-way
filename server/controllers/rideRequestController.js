@@ -1,4 +1,4 @@
-import pool from '../models/db';
+import models from '../models';
 
 /**
  * controller class to handle REST routes for ride requests

@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import pool from '../models/db';
+import models from '/models';
 
 /**
  * controller class to handle REST routes

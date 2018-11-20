@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { isEmpty } from 'lodash';
-import pool from '../models/db';
+import models from '../models';
 import Token from '../utils/Token';
 
 /**
@@ -27,33 +27,27 @@ export default class User {
     }
     const { fullName, email, password } = req.body;
     // check within database to see if user exists
-    return pool
-      .query('SELECT "email" FROM users WHERE "email"=$1', [email])
-      .then((selectResult) => {
-        if (selectResult.rowCount !== 0) {
+    return models.User.findOne({
+      where: {
+        email,
+      },
+    })
+      .then((foundUser) => {
+        if (foundUser) {
           return res.status(409).json({
             status: 'error',
             message: 'user with this email already exists',
           });
         }
-        return pool
-          .query(
-            'INSERT INTO users("fullName", "email", "password") values($1, $2, $3)',
-            [fullName, email, bcrypt.hashSync(password, 10)],
-          )
-          .then(() => {
-            pool
-              .query('SELECT "userId", "fullName", "phone", "email" FROM users WHERE "email"=$1', [email])
-              .then((result) => {
-                const user = result.rows[0];
-                // create token
-                const token = Token.generateToken(user.userId);
-                return res.status(201).json({
-                  status: 'success',
-                  user,
-                  token,
-                });
-              });
+        return models.User.create({ fullName, email, password })
+          .then((user) => {
+            // create token
+            const token = Token.generateToken(user.userId);
+            return res.status(201).json({
+              status: 'success',
+              user,
+              token,
+            });
           })
           .catch(() => {
             return res.status(500).json({
@@ -61,6 +55,13 @@ export default class User {
               message: 'unable to create user account',
             });
           });
+      })
+      .catch((e) => {
+        console.log(e);
+        return res.status(500).json({
+          status: 'error',
+          message: 'error creating user account',
+        });
       });
   }
 
@@ -80,10 +81,12 @@ export default class User {
       return res.status(400).json({ errors });
     }
     const { email, password } = req.body;
-    return pool
-      .query('SELECT "userId", "fullName", "phone", "email", "password" FROM users WHERE "email"=$1', [email])
-      .then((result) => {
-        const user = result.rows[0];
+    return models.User.findOne({
+      where: {
+        email,
+      },
+    })
+      .then((user) => {
         if (!user) {
           return res.status(404).json({
             status: 'error',
@@ -96,13 +99,9 @@ export default class User {
           .then((valid) => {
             if (valid) {
               const token = Token.generateToken(user.userId);
-              // use rest operator to separate password from user into 'userSafeData'
-              // so it is safe to return to client
-              // eslint-disable-next-line
-              const { password, ...userSafeData } = user;
               return res.status(200).json({
                 status: 'success',
-                user: userSafeData,
+                user,
                 token,
               });
             }
@@ -137,10 +136,13 @@ export default class User {
    */
   static getUserProfile(req, res) {
     const { userId } = req;
-    return pool
-      .query('SELECT "userId", "fullName", "phone", "email" FROM users WHERE "userId"=$1', [userId])
-      .then((result) => {
-        if (result.rowCount < 1) {
+    return models.User.findOne({
+      where: {
+        userId,
+      }
+    })
+      .then((user) => {
+        if (!user) {
           return res.status(404).json({
             status: 'error',
             message: 'User does not exist',
@@ -148,7 +150,7 @@ export default class User {
         }
         return res.status(200).json({
           status: 'success',
-          user: result.rows[0],
+          user,
         });
       })
       .catch(() => {
