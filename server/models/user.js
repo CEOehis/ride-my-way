@@ -35,8 +35,11 @@ module.exports = (sequelize, DataTypes) => {
     return omit(this.dataValues, 'password');
   };
 
-  User.associate = (/* models */) => {
-    // associations can be defined here
+  User.associate = (models) => {
+    const { Ride } = models;
+    User.hasMany(Ride, {
+      foreignKey: 'userId',
+    });
   };
   return User;
 };

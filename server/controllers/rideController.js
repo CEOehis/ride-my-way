@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import models from '/models';
+import models from '../models';
 
 /**
  * controller class to handle REST routes
@@ -18,15 +18,21 @@ export default class Ride {
    * @memberof Ride
    */
   static getAllRideOffers(req, res) {
-    pool
-      .query('SELECT rides."rideId", rides."origin", rides."destination", rides."departureDate", rides."departureTime", rides."seats", users."fullName" as "rideCreator", rides."createdAt", rides."updatedAt"  FROM rides INNER JOIN users on (rides."userId" = users."userId");')
-      .then((result) => {
+    models.Ride.findAll({
+      include: [
+        {
+          model: models.User,
+        },
+      ]
+    })
+      .then((rides) => {
         return res.status(200).json({
           status: 'success',
-          rides: result.rows,
+          rides,
         });
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         return res.status(500).json({
           status: 'error',
           message: 'unable to fetch rides',
